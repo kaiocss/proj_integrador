@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <title>Carrinho</title>
+    </head>
+    <body>
+        <header>
+            <div class="logo-menu">
+            <img src="/ecommerce/frontend/assets/logo.png" alt="Logo da Loja" class="logo">
+            <img src="/ecommerce/frontend/assets/menu-burger.png" alt="menu" class="menu_bar">
+            </div>
+            <div class="top-bar">
+                <div class="search-container">
+                    <input type="text" placeholder="Como podemos ajudar?" class="search-bar">
+                    <img src="/ecommerce/frontend/assets/search.png" alt="pesquisar" class="search-icon">
+                </div>
+                <a href="#" class="login">
+                    <img src="/ecommerce/frontend/assets/circle-user.png" alt="usuario" class="icone-usuario">
+                    Faça Login
+                </a>
+                <a href="/ecommerce/frontend/carrinho.html" class="carrinho">
+                    <img src="/ecommerce/frontend/assets/cart.png" alt="Carrinho" class="carrinho">
+                </a>
+            </div>
+        </header>
+
+        <section class="detalhes">
+            <a href="/ecommerce/frontend/index.html" class="voltar" alt="voltar">
+                <img src="/ecommerce/frontend/assets/angle-left.png">
+            </a>
+        <h2>Carrinho</h2>
+    </section>
+    
+    <section class="carrinho-container">
+        <div class="produtos" id="lista-carrinho">
+        </div>
+        <div class="cep-section">
+            <label for="cep">Informe seu CEP:</label>
+            <input type="text" id="cep" placeholder="00000-000" />
+            <button id="calcular-frete">Calcular Frete</button>
+        </div>
+        <div id="frete-opcoes">
+            <label for="frete-select">Escolha o frete:</label>
+            <select id="frete-select"></select>
+        </div>
+        <div class="resumo" id="resumo-carrinho">
+        </div>
+        
+        <button id="limpar-carrinho" class="botao-limpar">Limpar Carrinho</button>
+        <button id="comprar-carrinho" class="botao-finalizar">Comprar</button>
+      </section>
+        <script src="/ecommerce/frontend/js/carrinho.js"></script>
+    </body>
+</html>

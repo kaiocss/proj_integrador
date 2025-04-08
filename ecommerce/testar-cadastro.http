@@ -1,0 +1,11 @@
+POST http://localhost:8080/api/usuarios/cadastro
+Content-Type: application/json
+
+{
+  "nome": "Vinicius",
+  "email": "vinicius@email.com",
+  "senha": "123456",
+  "cpf": "00000000000",
+  "tipoUser": "cliente",
+  "status": "ativo"
+}
