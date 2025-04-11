@@ -14,7 +14,7 @@ import com.example.models.Produto;
 public class ProdutoDAO{
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "Sd.iago12";
+    private static final String DB_PASSWORD = "58725997";
 
 
     //Método para incluir um produto

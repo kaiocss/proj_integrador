@@ -29,7 +29,7 @@ public class UsuarioService {
 
         usuario.setSenha(criptografarSenha(usuario.getSenha()));
         usuario.setTipo(TipoUser.cliente);
-        usuario.setStatus(Status.ativado);
+        usuario.setStatus(Status.ativo);
 
         return usuarioRepository.save(usuario);
     }

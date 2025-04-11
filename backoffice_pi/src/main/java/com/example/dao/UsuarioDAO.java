@@ -16,7 +16,7 @@ import com.example.models.Usuario;
 public class UsuarioDAO {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "Sd.iago12";
+    private static final String DB_PASSWORD = "58725997";
 
     // Método para validar login
     public Usuario validarLogin(String email, String senha) {
