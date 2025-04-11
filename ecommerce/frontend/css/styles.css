@@ -26,41 +26,76 @@ header .logo {
     object-fit: contain;
 }
 
-header .menu_bar {
-    height: 30px;
-    cursor: pointer; 
+.menu-bar {
+    background-color: #007BFF; /* Cor de fundo */
+    padding: 10px;
+    position: absolute;
+    top: 60px; /* Posiciona abaixo do cabeçalho */
+    left: 0;
+    width: 100%; /* Largura total */
+    display: none; /* Oculta inicialmente */
 }
 
-header .top-bar {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+.menu-bar.hidden {
+    display: none; /* Garante que permaneça escondido */
 }
+
+.menu-bar.show {
+    display: block; /* Mostra o menu quando a classe "show" é aplicada */
+}
+
+.menu-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Alinha na horizontal */
+    gap: 1rem;
+}
+
+.menu-list li a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.menu-list li a:hover {
+    background-color: #0056b3;
+}
+
+
 
 .search-container {
-    position: relative; 
-    width: 100%; 
-    max-width: 500px; 
+
+    display: flex; /* Alinha os elementos na horizontal */
+    align-items: center; /* Centraliza os itens verticalmente */
+    justify-content: center; /* Centraliza horizontalmente (opcional) */
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 10px; /* Espaçamento entre o campo e a lupa */
+
 }
 
 .search-bar {
-    width: 100%;
-    margin-right: 150px;
-    padding: 10px;
-    background-color: #D9D9D9;
-    border: 1px solid #f1f1f1;
-    border-radius: 15px;
-    font-size: 14px;
+    width: 300px; /* Define o tamanho da barra de pesquisa */
+    padding: 8px; /* Espaçamento interno para tornar mais visível */
+    border: 1px solid #ccc; /* Estilo da borda */
+    border-radius: 5px; /* Borda arredondada */
 }
 
 .search-icon {
-    position: absolute; 
-    right: 5px; 
-    top: 50%; 
-    transform: translateY(-50%); 
+    width: 20px; /* Tamanho do ícone */
+    height: 20px; /* Tamanho do ícone */
+    cursor: pointer; /* Altera o cursor para indicar clique */
+}
+
+.search-icon {
+
     width: 20px; 
     height: 20px;
-    pointer-events: none; 
+  cursor: pointer;
 }
 .login {
     display: flex;
@@ -103,7 +138,19 @@ header .carrinho {
 
 header .carrinho:hover {
     animation: girarCarrinho 0.5s ease-in-out;
+
+    
 }
+
+
+header .carrinho img {
+    width: 50px; /* Define a nova largura do ícone */
+    height: 50px; /* Define a nova altura do ícone */
+    cursor: pointer; /* Mantém o cursor interativo */
+    max-height: 50px; /* Garante que o ícone não ultrapasse o tamanho definido */
+    padding: 0px;
+}
+
 
 
 section.ofertas {
@@ -639,3 +686,33 @@ section.detalhes h2 {
 .login-form button:hover {
     background-color: #0056b3;
 }
+
+
+
+
+.top-bar {
+    display: flex; /* Coloca os itens em uma linha */
+    justify-content: flex-end; /* Alinha os itens à direita */
+    align-items: center; /* Centraliza verticalmente */
+    gap: 15px; /* Espaçamento entre o botão e o carrinho */
+}
+
+.link-login {
+    color: #fff;
+    background-color: #007BFF;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.link-login:hover {
+    background-color: #0056b3;
+}
+
+header .carrinho {
+    margin-right: 0; /* Remove margem adicional à direita */
+    max-height: 30px;
+    cursor: pointer;
+}
+
