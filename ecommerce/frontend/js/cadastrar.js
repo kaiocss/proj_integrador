@@ -43,12 +43,13 @@ document.getElementById('formCadastro').addEventListener('submit', async functio
     senha,
     cpf,
     tipoUser: "cliente",
-    status: "ativado",
+    status: "ativo", // Alterei para um valor Enum pois estava dando erro
     dataNascimento,
     genero,
     enderecoFaturamento,
     enderecosEntrega
-  };
+};
+
 
   try {
     const response = await fetch("http://localhost:8080/api/usuarios/cadastro", {
