@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cadastro de Cliente</title>
   <link rel="stylesheet" href="../frontend/css/cadastar.css"/>
+  <link rel="stylesheet" href="../frontend/css/styles.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet"/>
@@ -12,10 +13,20 @@
 <body>
   <header>
     <div class="logo-menu">
-      <img src="/ecommerce/frontend/assets/logo.png" alt="Logo da Loja" class="logo" />
-      <img src="/ecommerce/frontend/assets/menu-burger.png" alt="menu" class="menu_bar" />
+        <img src="/ecommerce/frontend/assets/logo.png" alt="Logo da Loja" class="logo">
+        <img id="menu-toggle" src="/ecommerce/frontend/assets/menu-burger.png" alt="Menu" class="menu-bar">
     </div>
-  </header>
+    </nav>
+    <div class="top-bar">
+        <div class="search-container">
+            <input type="text" placeholder="Como podemos te ajudar?" class="search-bar">
+            <img src="/ecommerce/frontend/assets/search.png" alt="pesquisar" class="search-icon">
+        </div>
+        <a href="/ecommerce/frontend/carrinho.html" class="carrinho">
+            <img src="/ecommerce/frontend/assets/cart.png" alt="Carrinho" class="icone-carrinho">
+        </a>
+    </div>
+</header>
 
   <main class="cadastro-container">
     <a href="/ecommerce/frontend/index.html" class="btn-voltar">← Voltar ao Início</a>

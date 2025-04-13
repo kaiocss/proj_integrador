@@ -43,7 +43,7 @@ document.getElementById('formCadastro').addEventListener('submit', async functio
     senha,
     cpf,
     tipoUser: "cliente",
-    status: "ativo", // Alterei para um valor Enum pois estava dando erro
+    status: "ativo", 
     dataNascimento,
     genero,
     enderecoFaturamento,
@@ -60,7 +60,7 @@ document.getElementById('formCadastro').addEventListener('submit', async functio
 
     if (response.ok) {
       alert("Cadastro realizado com sucesso!");
-      window.location.href = "index.html"; // redireciona para a tela de login
+      window.location.href = "login.html"; // redireciona para a tela de login
     } else {
       const erro = await response.text();
       mostrarErro("Erro: " + erro);

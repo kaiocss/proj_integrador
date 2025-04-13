@@ -38,8 +38,7 @@ public class Usuario {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Endereco> enderecosEntrega;
 
-    // Getters e Setters
-
+    
     public Long getId() {
         return id;
     }

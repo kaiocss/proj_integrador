@@ -1,4 +1,4 @@
-/* Estilo geral */
+
 body {
     font-family: 'Noto Sans', sans-serif;
     background-color: #f4f4f4;
@@ -6,14 +6,13 @@ body {
     padding: 0;
 }
 
-/* Container principal da seção de autenticação */
 .auth-container {
     display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    min-height: 100vh; /* Faz com que ocupe a altura total da tela */
-    gap: 2rem; /* Espaçamento entre login e cadastro */
-    padding: 2rem; /* Margem interna */
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    gap: 2rem; 
+    padding: 2rem; 
     background-color: #f4f4f4;
 }
 
