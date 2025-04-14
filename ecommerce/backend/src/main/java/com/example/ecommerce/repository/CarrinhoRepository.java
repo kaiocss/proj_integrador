@@ -7,6 +7,5 @@ import com.example.ecommerce.model.Produto;
 
 @Repository
 public interface CarrinhoRepository extends JpaRepository<Carrinho, Integer> {
-
     Carrinho findByProduto(Produto produto);
 }

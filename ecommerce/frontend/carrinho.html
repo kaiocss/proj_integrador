@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="/ecommerce/frontend/css/styles.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet"/>
@@ -22,8 +22,13 @@
                     <input type="text" placeholder="Como podemos te ajudar?" class="search-bar">
                     <img src="/ecommerce/frontend/assets/search.png" alt="pesquisar" class="search-icon">
                 </div>
-                <a href="/ecommerce/frontend/login.html" class="link-login">
-                    Entre ou Cadastre-se</a>
+                <div id="userMenu" class="user-menu" style="position: relative;">
+                    <button id="userButton" class="userBtn">Usuário</button>
+                    <div id="menuDropdown" class="dropdown">
+                      <a href="/ecommerce/frontend/alterar.html">Alterar meus dados</a><br>
+                      <a href="#" id="logoutBtn">Sair</a> 
+                    </div>
+                  </div>
                 <a href="/ecommerce/frontend/carrinho.html" class="carrinho">
                     <img src="/ecommerce/frontend/assets/cart.png" alt="Carrinho" class="icone-carrinho">
                 </a>
@@ -56,5 +61,6 @@
         <button id="comprar-carrinho" class="botao-finalizar">Comprar</button>
       </section>
         <script src="/ecommerce/frontend/js/carrinho.js"></script>
+        <script src="/ecommerce/frontend/js/sessaoLogin.js"></script>
     </body>
 </html>

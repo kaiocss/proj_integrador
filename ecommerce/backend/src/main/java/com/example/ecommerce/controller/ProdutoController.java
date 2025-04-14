@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
-@CrossOrigin("*") 
 public class ProdutoController {
 
     private final ProdutoService produtoService;
@@ -65,17 +64,4 @@ public class ProdutoController {
         }
     }
 
-    @DeleteMapping("/{codigo}")
-    public ResponseEntity<String> excluirProduto(@PathVariable int codigo) {
-        try {
-            boolean excluido = produtoService.excluirProduto(codigo);
-            if (excluido) {
-                return ResponseEntity.ok("Produto excluído com sucesso!");
-            }
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            System.err.println("Erro ao excluir produto: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno");
-        }
-    }
 }

@@ -1,5 +1,7 @@
 package com.example.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +18,11 @@ public class Endereco {
     private String bairro;
     private String cidade;
     private String uf;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
     public Long getId() {
         return id;
@@ -81,5 +88,12 @@ public class Endereco {
         this.uf = uf;
     }
 
-    // Getters e Setters
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
 }

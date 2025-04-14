@@ -1,21 +1,27 @@
 package com.example.ecommerce.services;
 
+import com.example.ecommerce.model.Endereco;
 import com.example.ecommerce.model.Status;
 import com.example.ecommerce.model.TipoUser;
 import com.example.ecommerce.model.Usuario;
+import com.example.ecommerce.repository.EnderecoRepository;
 import com.example.ecommerce.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final EnderecoRepository enderecoRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+     public UsuarioService(UsuarioRepository usuarioRepository, EnderecoRepository enderecoRepository) {
         this.usuarioRepository = usuarioRepository;
+        this.enderecoRepository = enderecoRepository;
     }
 
     public Usuario cadastrar(Usuario usuario) throws Exception {
@@ -34,6 +40,38 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+     public Usuario atualizarDados(Long id, String nome, String genero, String dataNascimento) throws Exception {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new Exception("Usuário não encontrado."));
+
+        usuario.setNome(nome);
+        usuario.setGenero(genero);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = (Date) sdf.parse(dataNascimento);
+        usuario.setDataNascimento(date);
+        return usuarioRepository.save(usuario);
+    }
+
+    public void alterarSenha(Long id, String senhaAtual, String novaSenha) throws Exception {
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new Exception("Usuário não encontrado."));
+
+        if (!criptografarSenha(senhaAtual).equals(usuario.getSenha())) {
+            throw new Exception("Senha atual incorreta.");
+        }
+
+        usuario.setSenha(criptografarSenha(novaSenha));
+        usuarioRepository.save(usuario);
+    }
+
+    public void adicionarEndereco(Long usuarioId, Endereco endereco) throws Exception {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new Exception("Usuário não encontrado."));
+        endereco.setUsuario(usuario); 
+        enderecoRepository.save(endereco); 
+    }
+
     private String criptografarSenha(String senha) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hash = md.digest(senha.getBytes());
@@ -45,4 +83,21 @@ public class UsuarioService {
 
         return hexString.toString();
     }
+
+    public Usuario login(String email, String senha) throws Exception {
+        if (!usuarioRepository.existsByEmail(email)) {
+            throw new Exception("Usuário não encontrado.");
+        }
+    
+        Usuario usuario = usuarioRepository.findUsuarioByEmail(email)
+            .orElseThrow(() -> new Exception("Erro ao buscar usuário no banco de dados."));
+    
+        if (!criptografarSenha(senha).equals(usuario.getSenha())) {
+            throw new Exception("Senha inválida.");
+        }
+    
+        return usuario;
+    }
+    
+    
 }

@@ -59,30 +59,3 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM carregado!');
     carregarProdutos();
 });
-
-document.getElementById('login-button').addEventListener('click', async () => {
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha').value;
-
-    try {
-        const response = await fetch('http://localhost:8080/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, senha }),
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            alert('Login realizado com sucesso!');
-            // Você pode redirecionar ou salvar os dados de sessão aqui
-        } else {
-            const error = await response.text();
-            alert('Erro: ' + error);
-        }
-    } catch (e) {
-        console.error('Erro de conexão:', e);
-        alert('Não foi possível conectar ao servidor.');
-    }
-});

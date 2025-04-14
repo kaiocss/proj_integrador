@@ -655,21 +655,6 @@ section.detalhes h2 {
     border-radius: 5px;
 }
 
-.login-form button {
-    margin-top: 10px;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #34495e;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.login-form button:hover {
-    background-color: #2c3e50;
-}
 
 
 .top-bar {
@@ -679,15 +664,48 @@ section.detalhes h2 {
     gap: 15px; 
 }
 
-.link-login {
-    color: #fff;
-    background-color: #2c3e50;
-    padding: 5px 10px;
-    text-decoration: none;
-    border-radius: 5px;
-}
+.user-menu {
+    position: relative;
+    display: inline-block;
+  }
 
-.link-login:hover {
+  .userBtn{
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 16px;
     background-color: #34495e;
-}
+    color: #fff;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 400;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .userBtn:hover{
+    background-color: #2c3e50;
+  }
+  
+  .dropdown {
+    position: absolute;
+    padding: 12px;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    display: none;
+  }
+  
+  .dropdown a {
+    padding: 8px 8px;
+    text-decoration: none;
+    display: block;
+    color: black;
+  }
+  
+  .dropdown a:hover {
+    background-color: #f1f1f1;
+  }
 

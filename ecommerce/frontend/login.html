@@ -10,9 +10,10 @@
     <section class="auth-container">
         <div class="login-section">
             <h2>Login</h2>
-            <form>
-                <input type="email" placeholder="Digite seu email" required>
-                <input type="password" placeholder="Digite sua senha" required>
+            <form id="formLogin">
+                <input type="email" placeholder="Digite seu email" required id="email">
+                <input type="password" placeholder="Digite sua senha" required id="senha">
+                <div id="mensagem" style="display: none; color: red;"></div>
                 <button type="submit">Entrar</button>
             </form>
         </div>
@@ -21,5 +22,6 @@
             <a href="cadastrar.html" class="btn-signup">Cadastre-se</a>
         </div>
     </section>
+    <script src="./js/login.js"></script>
 </body>
 </html>
