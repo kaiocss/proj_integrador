@@ -103,5 +103,15 @@ public ResponseEntity<?> adicionarEndereco(HttpSession session, @RequestBody End
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
+    @PostMapping("/logout")
+public ResponseEntity<?> logout(HttpSession session) {
+    try {
+        session.invalidate();  // Invalida a sessão do usuário
+        return ResponseEntity.ok("Logout realizado com sucesso.");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao realizar o logout.");
+    }
+}
+
 
 }
