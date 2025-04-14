@@ -31,6 +31,16 @@ public class Usuario {
         this.senha = senha;
         id = valor++;
     }
+    @Override
+public String toString() {
+    return "ID: " + getId() +
+           ", Nome: " + getNome() +
+           ", CPF: " + getCpf() +
+           ", Email: " + getEmail() +
+           ", Status: " + getStatus() +
+           ", Grupo: " + getGrupo();
+}
+
 
     public void setId(int id) { this.id = id; }
     public static void setValor(int valor) { Usuario.valor = valor; }
