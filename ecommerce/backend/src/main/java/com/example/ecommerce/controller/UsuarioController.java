@@ -40,7 +40,7 @@ public class UsuarioController {
 
         Usuario usuario = service.login(email, senha);
         session.setAttribute("usuarioLogado", usuario);
-        return ResponseEntity.ok("Login realizado com sucesso: Bem-vindo(a), " + usuario.getNome());
+        return ResponseEntity.ok("Bem vindo(a) " + usuario.getNome()); 
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
@@ -66,12 +66,14 @@ public ResponseEntity<?> atualizarDados(HttpSession session, @RequestBody Map<St
         String dataNascimento = novosDados.get("dataNascimento"); 
         String genero = novosDados.get("genero");
 
-        service.atualizarDados(usuario.getId(), nome, genero, dataNascimento);
-        return ResponseEntity.ok("Dados atualizados com sucesso.");
+        Usuario usuarioAtualizado = service.atualizarDados(usuario.getId(), nome, genero, dataNascimento);
+
+        return ResponseEntity.ok(usuarioAtualizado);
     } catch (Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
     }
 }
+
 
 @PutMapping("/alterarSenha")
 public ResponseEntity<?> alterarSenha(HttpSession session, @RequestBody Map<String, String> senhas) {

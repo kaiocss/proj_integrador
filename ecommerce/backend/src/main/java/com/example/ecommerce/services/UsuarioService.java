@@ -6,6 +6,8 @@ import com.example.ecommerce.model.TipoUser;
 import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.repository.EnderecoRepository;
 import com.example.ecommerce.repository.UsuarioRepository;
+
+import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
@@ -37,21 +39,33 @@ public class UsuarioService {
         usuario.setTipo(TipoUser.cliente);
         usuario.setStatus(Status.ativo);
 
+        if (usuario.getEnderecoFaturamento() != null) {
+            Endereco enderecoFaturamento = usuario.getEnderecoFaturamento();
+            enderecoFaturamento.setUsuario(usuario); 
+        }
+    
         return usuarioRepository.save(usuario);
     }
 
-     public Usuario atualizarDados(Long id, String nome, String genero, String dataNascimento) throws Exception {
+    public Usuario atualizarDados(Long id, String nome, String genero, String dataNascimento) throws Exception {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new Exception("Usuário não encontrado."));
-
+    
         usuario.setNome(nome);
         usuario.setGenero(genero);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = (Date) sdf.parse(dataNascimento);
-        usuario.setDataNascimento(date);
+        try {
+            java.util.Date utilDate = sdf.parse(dataNascimento);
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            usuario.setDataNascimento(sqlDate);
+        } catch (ParseException e) {
+            throw new Exception("Erro ao converter data: " + e.getMessage());
+        }
+        
         return usuarioRepository.save(usuario);
     }
+    
 
     public void alterarSenha(Long id, String senhaAtual, String novaSenha) throws Exception {
         Usuario usuario = usuarioRepository.findById(id)

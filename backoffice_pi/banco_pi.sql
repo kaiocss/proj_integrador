@@ -85,4 +85,17 @@ CREATE TABLE usuarios (
 
 SELECT * FROM usuarios;
 
+CREATE TABLE enderecos (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    cep VARCHAR(20) NOT NULL,
+    logradouro VARCHAR(255) NOT NULL,
+    numero VARCHAR(20) NOT NULL,
+    complemento VARCHAR(255),
+    bairro VARCHAR(255),
+    cidade VARCHAR(255),
+    uf VARCHAR(2),
+    usuario_id BIGINT NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
 
