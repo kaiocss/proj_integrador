@@ -24,12 +24,22 @@ document.addEventListener('DOMContentLoaded', async function () {
             });
 
             logoutBtn.addEventListener('click', async () => {
-                await fetch("http://127.0.0.1:8080/api/usuarios/logout", {
-                    method: "POST",
-                    credentials: "include"
-                });
-                window.location.href = "index.html";
+                const confirmLogout = confirm("Você está prestes a sair. Deseja continuar?");
+                if (confirmLogout) {
+                    await fetch("http://127.0.0.1:8080/api/usuarios/logout", {
+                        method: "POST",
+                        credentials: "include"
+                    });
+                    
+                    alert("Você foi deslogado com sucesso!");
+                    
+                    // Atualizar o botão e o menu após logout
+                    userButton.innerText = "Login";  // Atualiza o botão de login para "Login"
+                    userMenu.innerHTML = `<a href="login.html">Entre ou Cadastre-se</a>`;  // Mostra a opção de login no menu
+                    window.location.href = "index.html";  // Redireciona para a página inicial
+                }
             });
+            
         } else {
             console.log("Usuário não logado.");
             userMenu.innerHTML = `<a href="login.html">Entre ou Cadastre-se</a>`;
