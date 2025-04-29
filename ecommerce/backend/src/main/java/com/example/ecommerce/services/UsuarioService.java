@@ -20,11 +20,13 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final EnderecoRepository enderecoRepository;
-
-     public UsuarioService(UsuarioRepository usuarioRepository, EnderecoRepository enderecoRepository) {
+    private final CarrinhoService carrinhoService;
+    
+    public UsuarioService(UsuarioRepository usuarioRepository, EnderecoRepository enderecoRepository, CarrinhoService carrinhoService) {
         this.usuarioRepository = usuarioRepository;
         this.enderecoRepository = enderecoRepository;
-    }
+        this.carrinhoService = carrinhoService;
+            }
 
     public Usuario cadastrar(Usuario usuario) throws Exception {
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
@@ -102,7 +104,7 @@ public class UsuarioService {
         if (!usuarioRepository.existsByEmail(email)) {
             throw new Exception("Usuário não encontrado.");
         }
-    
+
         Usuario usuario = usuarioRepository.findUsuarioByEmail(email)
             .orElseThrow(() -> new Exception("Erro ao buscar usuário no banco de dados."));
     
@@ -110,8 +112,30 @@ public class UsuarioService {
             throw new Exception("Senha inválida.");
         }
     
+        carrinhoService.associarCarrinhoAoUsuario(usuario.getId());
         return usuario;
     }
-    
-    
 }
+
+    
+
+
+
+    
+
+
+
+    
+
+
+
+    
+
+
+
+    
+
+
+
+    
+
