@@ -23,6 +23,10 @@ public class Carrinho {
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
+
     private Integer quantidade;
 
     @Column(name = "preco_unitario", nullable = false)
@@ -57,6 +61,15 @@ public class Carrinho {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+    
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
 
     public Integer getQuantidade() {
         return quantidade;
