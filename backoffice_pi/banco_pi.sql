@@ -99,3 +99,10 @@ CREATE TABLE enderecos (
 );
 
 
+ALTER TABLE CarrinhoProduto ADD COLUMN id_usuario BIGINT;
+
+ALTER TABLE CarrinhoProduto ADD CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios(id);
+
+
+
+
