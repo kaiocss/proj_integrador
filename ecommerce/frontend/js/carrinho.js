@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resumoCarrinho = document.getElementById('resumo-carrinho');
     const inputCEP = document.getElementById('cep');
     const opcoesFrete = document.getElementById('frete-opcoes');
+    const finalizarCompra = document.getElementById('finalizar-compra');
 
     let valorFreteSelecionado = 0;
 
@@ -131,6 +132,20 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Erro ao limpar o carrinho:", error);
             listaCarrinho.innerHTML = '<p>Erro ao limpar o carrinho.</p>';
+        }
+    });
+
+    finalizarCompra.addEventListener('click', async () => {
+        try {
+            const response = await fetch('http://localhost:8080/api/usuarios/sessao');
+            if (response.status === 401) {
+                window.location.href = '/ecommerce/frontend/login.html';
+            } else {
+                
+                window.location.href = '/ecommerce/frontend/checkout.html';
+            }
+        } catch (error) {
+            console.error("Erro ao verificar login:", error);
         }
     });
 
