@@ -1,9 +1,10 @@
 package com.example.ecommerce.services;
 import com.example.ecommerce.model.Carrinho;
 import com.example.ecommerce.model.Produto;
+import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.repository.CarrinhoRepository;
 import com.example.ecommerce.repository.ProdutoRepository;
-
+import com.example.ecommerce.repository.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class CarrinhoService {
 
     @Autowired
     private ProdutoRepository produtoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository; 
 
     public Carrinho adicionarProdutoAoCarrinho(Carrinho carrinho) {
         Produto produto = produtoRepository.findById(carrinho.getProduto().getCodigo())
@@ -59,5 +63,19 @@ public class CarrinhoService {
 
     public Carrinho buscarPorProduto(Produto produto) {
         return carrinhoRepository.findByProduto(produto);
+    }
+
+    public void associarCarrinhoAoUsuario(Long usuarioId) {
+        
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+
+        
+        Carrinho carrinho = carrinhoRepository.findByUsuario(usuario);
+            if (carrinho == null) {
+            carrinho = new Carrinho();
+            carrinho.setUsuario(usuario); 
+            carrinhoRepository.save(carrinho);
+        }
     }
 }
