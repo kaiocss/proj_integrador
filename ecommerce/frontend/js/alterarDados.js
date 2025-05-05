@@ -59,7 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log("Enviando dados pessoais:", { nome, dataNascimento, genero });
 
-        mensagemDados.textContent = "Dados atualizados com sucesso!";
+        mensagemDados.textContent = `Dados atualizados com sucesso!
+        Nome: ${nome}
+        Data de Nascimento: ${dataNascimento}
+        Gênero: ${genero}`;
         mensagemDados.style.display = "block";
         mensagemDados.style.color = "green";
     });
