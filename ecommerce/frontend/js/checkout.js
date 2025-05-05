@@ -15,9 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("Usuário não está logado. Continuando com a compra como anônimo...");
     }
 
-    const cartItems = JSON.parse(sessionStorage.getItem("carrinhoTemporario") || "[]");
-    const cartItemsContainer = document.getElementById("cart-items");
-    const totalPriceElement = document.getElementById("total-price");
+    const orderItemsContainer = document.getElementById("order-items");
+    const totalValueElement = document.getElementById("total-price");
     const pagamentoSelect = document.getElementById("pagamento");
     const cartaoInfo = document.getElementById("cartao-info");
     const boletoInfo = document.getElementById("boleto-info");
@@ -25,15 +24,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let totalPrice = 0;
 
-    // Renderizar itens do carrinho e calcular o preço total
+    // Carregar itens do carrinho
+    const cartItems = JSON.parse(sessionStorage.getItem("carrinhoTemporario") || "[]");
+
     cartItems.forEach(item => {
         const li = document.createElement("li");
         li.textContent = `${item.produto.nome} - R$ ${item.produto.valorProduto} x ${item.quantidade}`;
-        cartItemsContainer.appendChild(li);
+        orderItemsContainer.appendChild(li);
         totalPrice += item.produto.valorProduto * item.quantidade;
     });
 
-    totalPriceElement.textContent = `R$ ${totalPrice.toFixed(2)}`;
+    totalValueElement.textContent = `R$ ${totalPrice.toFixed(2)}`;
 
     // Controlar exibição das informações de pagamento
     pagamentoSelect.addEventListener("change", (e) => {
@@ -109,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Finalizar pedido
-    finalizarPedidoButton.addEventListener("click", (e) => {
+    finalizarPedidoButton.addEventListener("click", async (e) => {
         e.preventDefault();
 
         const selectedPayment = pagamentoSelect.value;
@@ -131,39 +132,51 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        const enderecoSelecionadoIndex = document.querySelector("input[name='enderecoSelecionado']:checked");
-        if (!enderecoSelecionadoIndex) {
-            alert("Por favor, selecione um endereço de entrega.");
+        const enderecoEntrega = document.getElementById("delivery-address").textContent;
+
+        if (!enderecoEntrega) {
+            alert("Por favor, selecione ou preencha um endereço de entrega.");
             return;
         }
 
-        const endereco = enderecos[parseInt(enderecoSelecionadoIndex.value)];
+        const pedido = {
+            usuarioId: 1, 
+            enderecoEntrega,
+            formaPagamento: selectedPayment,
+            itens: cartItems.map(item => ({
+                produtoId: item.produto.id,
+                quantidade: item.quantidade,
+                precoUnitario: item.produto.valorProduto
+            })),
+            totalGeral: totalPrice
+        };
 
-        const form = document.getElementById("form-checkout");
-        const formData = new FormData(form);
-        const clienteData = Object.fromEntries(formData.entries());
+        try {
+            const response = await fetch("http://localhost:8080/api/orders/finalize", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pedido)
+            });
 
-        // Enviar o pedido para o backend
-        fetch("http://localhost:8080/api/checkout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                cliente: clienteData,
-                endereco: endereco,
-                carrinho: cartItems,
-                pagamento: selectedPayment
-            })
-        }).then(response => {
             if (response.ok) {
-                alert("Pedido realizado com sucesso!");
-                window.location.href = "/ecommerce/frontend/index.html";
+                const savedOrder = await response.json();
+
+                localStorage.setItem("resumoPedido", JSON.stringify({
+                    numeroPedido: savedOrder.numeroPedido,
+                    totalGeral: savedOrder.totalGeral,
+                    enderecoEntrega: savedOrder.enderecoEntrega,
+                    formaPagamento: savedOrder.formaPagamento,
+                    itens: savedOrder.itens
+                }));
+
+                window.location.href = "/ecommerce/frontend/resumo-pedido.html";
             } else {
-                alert("Erro ao finalizar pedido.");
+                alert("Erro ao finalizar o pedido. Por favor, tente novamente.");
             }
-        }).catch(error => {
-            console.error("Erro ao finalizar pedido:", error);
+        } catch (error) {
+            console.error("Erro ao finalizar o pedido:", error);
             alert("Houve um erro ao processar o pedido.");
-        });
+        }
     });
 
     renderizarEnderecos();
