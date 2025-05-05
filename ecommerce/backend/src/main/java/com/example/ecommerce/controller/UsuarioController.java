@@ -1,11 +1,14 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.model.Carrinho;
 import com.example.ecommerce.model.Endereco;
 import com.example.ecommerce.model.Usuario;
+import com.example.ecommerce.services.CarrinhoService;
 import com.example.ecommerce.services.UsuarioService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -17,29 +20,46 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioService service;
+    private final CarrinhoService carrinhoService;
 
-    public UsuarioController(UsuarioService service) {
+    public UsuarioController(UsuarioService service, CarrinhoService carrinhoService) {
         this.service = service;
+        this.carrinhoService = carrinhoService;
     }
 
-    @PostMapping("/cadastro")
-    public ResponseEntity<?> cadastrar(@RequestBody Usuario usuario) {
-        try {
-            Usuario novo = service.cadastrar(usuario);
-            return ResponseEntity.ok(novo);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+   @PostMapping("/cadastro")
+   public ResponseEntity<?> cadastrar(@RequestBody Usuario usuario, HttpSession session) {
+    try {
+        // 1. Cadastrar o usuário
+        Usuario novoUsuario = service.cadastrar(usuario);
+
+        @SuppressWarnings("unchecked")
+        List<Carrinho> carrinhoTemporario = (List<Carrinho>) session.getAttribute("carrinhoTemporario");
+
+        if (carrinhoTemporario != null && !carrinhoTemporario.isEmpty()) {
+            carrinhoService.associarCarrinhoAoUsuario(session, novoUsuario.getId());
+            session.removeAttribute("carrinhoTemporario");
+            System.out.println("Carrinho temporário transferido para o usuário com ID: " + novoUsuario.getId());
+
+            return ResponseEntity.ok(Map.of("redirect", "carrinho"));
         }
-    }
 
+        return ResponseEntity.ok(Map.of("redirect", "home"));
+
+    } catch (Exception e) {
+        
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+}
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpSession session, @RequestBody Map<String, String> dadosLogin) {
     try {
         String email = dadosLogin.get("email");
         String senha = dadosLogin.get("senha");
 
-        Usuario usuario = service.login(email, senha);
+        Usuario usuario = service.login(email, senha, session);
         session.setAttribute("usuarioLogado", usuario);
+        carrinhoService.associarCarrinhoAoUsuario(session, usuario.getId());
         return ResponseEntity.ok("Bem vindo(a) " + usuario.getNome()); 
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());

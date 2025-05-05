@@ -7,6 +7,8 @@ import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.repository.EnderecoRepository;
 import com.example.ecommerce.repository.UsuarioRepository;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
@@ -100,7 +102,7 @@ public class UsuarioService {
         return hexString.toString();
     }
 
-    public Usuario login(String email, String senha) throws Exception {
+    public Usuario login(String email, String senha, HttpSession session) throws Exception {
         if (!usuarioRepository.existsByEmail(email)) {
             throw new Exception("Usuário não encontrado.");
         }
@@ -112,7 +114,7 @@ public class UsuarioService {
             throw new Exception("Senha inválida.");
         }
     
-        carrinhoService.associarCarrinhoAoUsuario(usuario.getId());
+        carrinhoService.associarCarrinhoAoUsuario(session, usuario.getId());
         return usuario;
     }
 }

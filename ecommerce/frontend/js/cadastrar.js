@@ -55,12 +55,19 @@ document.getElementById('formCadastro').addEventListener('submit', async functio
     const response = await fetch("http://localhost:8080/api/usuarios/cadastro", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dados)
+      body: JSON.stringify(dados),
+      credentials: "include"
     });
 
     if (response.ok) {
-      alert("Cadastro realizado com sucesso!");
-      window.location.href = "login.html"; // redireciona para a tela de login
+      const resultado = await response.json();
+  
+      if (resultado.redirect === "carrinho") {
+        window.location.href = "/ecommerce/frontend/carrinho.html";
+      } else {
+        alert("Cadastro realizado com sucesso!");
+        window.location.href = "/ecommerce/frontend/login.html";
+      }
     } else {
       const erro = await response.text();
       mostrarErro("Erro: " + erro);

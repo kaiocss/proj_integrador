@@ -103,6 +103,56 @@ ALTER TABLE CarrinhoProduto ADD COLUMN id_usuario BIGINT;
 
 ALTER TABLE CarrinhoProduto ADD CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios(id);
 
+CREATE TABLE pedido (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id BIGINT NOT NULL,
+    pagamento_id BIGINT,  
+    data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'pendente', 
+    total DECIMAL(10,2) NOT NULL,
+
+    CONSTRAINT fk_pedido_usuario FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id) ON DELETE CASCADE,
+
+    CONSTRAINT fk_pedido_pagamento FOREIGN KEY (pagamento_id)
+        REFERENCES pagamento(id) ON DELETE SET NULL  
+);
+
+CREATE TABLE item_pedido (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id BIGINT NOT NULL,
+    produto_codigo INT NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+
+    CONSTRAINT fk_item_pedido FOREIGN KEY (pedido_id)
+        REFERENCES pedido(id) ON DELETE CASCADE,
+
+    CONSTRAINT fk_item_produto FOREIGN KEY (produto_codigo)
+        REFERENCES produtos(codigo) ON DELETE CASCADE
+);
+
+CREATE TABLE pagamento (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tipo_pagamento VARCHAR(20) NOT NULL,  
+    status_pagamento VARCHAR(20) DEFAULT 'pendente', 
+    pedido_id BIGINT NOT NULL,  
+    data_pagamento DATETIME,   
+
+    numero_cartao VARCHAR(16),  
+    nome_cartao VARCHAR(100),   
+    validade_cartao DATE,       
+    codigo_verificador VARCHAR(3), 
+    parcelas INT,               
+
+    
+    numero_boleto VARCHAR(50), 
+    data_vencimento_boleto DATE, 
+
+    CONSTRAINT fk_pagamento_pedido FOREIGN KEY (pedido_id)
+        REFERENCES pedido(id) ON DELETE CASCADE
+);
+
 
 
 

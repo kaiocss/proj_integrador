@@ -33,10 +33,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                     
                     alert("Você foi deslogado com sucesso!");
                     
-                    // Atualizar o botão e o menu após logout
-                    userButton.innerText = "Login";  // Atualiza o botão de login para "Login"
-                    userMenu.innerHTML = `<a href="login.html">Entre ou Cadastre-se</a>`;  // Mostra a opção de login no menu
-                    window.location.href = "index.html";  // Redireciona para a página inicial
+                    userButton.innerText = "Login";  
+                    userMenu.innerHTML = `<a href="login.html">Entre ou Cadastre-se</a>`;  
+                    window.location.href = "index.html";  
                 }
             });
             

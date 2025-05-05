@@ -30,7 +30,7 @@ public class Carrinho {
     private Integer quantidade;
 
     @Column(name = "preco_unitario", nullable = false)
-    private BigDecimal precoUnitario;
+    private BigDecimal precoUnitario = BigDecimal.ZERO;;
 
     public Carrinho() {
     }

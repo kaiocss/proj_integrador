@@ -52,35 +52,37 @@ const carregarDetalhesProduto = async () => {
             },
         });
 
-        const botaoComprar = document.getElementById("comprar-botao");
-
-        botaoComprar.addEventListener("click", async () => {
+        document.getElementById("comprar-botao").addEventListener("click", async function() {
             try {
-                const carrinho = {
-                    produto: { codigo: produto.codigo },
-                    quantidade: 1 
-                };
+                const codigoProduto = parseInt(produto.codigo);
+                console.log("Enviando produto:", { codigo: codigoProduto });
 
-                console.log("Objeto enviado ao backend:", carrinho);
-
-                const responseCarrinho = await fetch('http://localhost:8080/api/carrinho/adicionar', {
+                const response = await fetch('http://127.0.0.1:8080/api/carrinho/adicionar', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(carrinho),
+                    body: JSON.stringify({
+                        codigo: codigoProduto
+                    }),
+                    credentials: 'include'
                 });
 
-                if (!responseCarrinho.ok) {
-                    const errorDetails = await responseCarrinho.text();
-                    throw new Error(`Erro ao adicionar ao carrinho: ${responseCarrinho.status} ${responseCarrinho.statusText}. Detalhes: ${errorDetails}`);
+                console.log("Resposta recebida:", response);
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.error || "Erro ao adicionar ao carrinho");
                 }
 
-                console.log("Produto adicionado ao carrinho com sucesso!");
+                const data = await response.json();
+                console.log("Dados da resposta:", data);
+
+                alert(data.message || "Produto adicionado com sucesso!");
                 window.location.href = "/ecommerce/frontend/carrinho.html";
             } catch (error) {
                 console.error("Erro ao adicionar produto ao carrinho:", error);
-                document.querySelector(".detalhes-produto").innerHTML = "<p>Erro ao adicionar o produto ao carrinho. Tente novamente mais tarde.</p>";
+                alert("Falha: " + error.message);
             }
         });
 
@@ -90,4 +92,6 @@ const carregarDetalhesProduto = async () => {
     }
 };
 
-document.addEventListener("DOMContentLoaded", carregarDetalhesProduto);
+document.addEventListener("DOMContentLoaded", () => {
+    carregarDetalhesProduto();
+});

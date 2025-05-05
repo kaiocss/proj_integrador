@@ -25,7 +25,7 @@ public class Produto {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ImagemProduto> imagens;
 
     public Integer getCodigo() {

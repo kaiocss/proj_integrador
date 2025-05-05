@@ -10,15 +10,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const atualizarCarrinho = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/carrinho/listar');
-            if (!response.ok) throw new Error("Erro ao carregar os dados do carrinho.");
+            const response = await fetch('http://127.0.0.1:8080/api/carrinho/listar', {
+                method: 'GET',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erro ${response.status}: ${response.statusText}`);
+            }
 
             const itensCarrinho = await response.json();
+            console.log("Itens recebidos:", itensCarrinho);
+
             listaCarrinho.innerHTML = '';
             resumoCarrinho.innerHTML = '';
             opcoesFrete.innerHTML = '';
 
-            if (itensCarrinho.length === 0) {
+            if (!itensCarrinho || itensCarrinho.length === 0) {
                 listaCarrinho.innerHTML = '<p>O carrinho está vazio.</p>';
                 return;
             }
@@ -27,6 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
             let quantidadeTotal = 0;
 
             itensCarrinho.forEach((item) => {
+                if (!item.id || item.id === 0) {
+                    console.error("Erro: Produto com ID inválido encontrado!", item);
+                    return; 
+                }
+
                 const precoUnitario = parseFloat(item.precoUnitario || 0);
                 const quantidade = parseInt(item.quantidade || 0);
                 const totalItem = precoUnitario * quantidade;
@@ -41,9 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="info">
                         <h3>${item.produto.nome}</h3>
                         <p>
-                            <button class="quantidade-btn" data-id="${item.id}" data-op="sub">−</button>
+                            <button class="quantidade-btn" data-id="${item.id}" data-op="sub" data-qtd="${quantidade}">−</button>
                             <span class="quantidade-text">${quantidade}</span>
-                            <button class="quantidade-btn" data-id="${item.id}" data-op="add">+</button>
+                            <button class="quantidade-btn" data-id="${item.id}" data-op="add" data-qtd="${quantidade}">+</button>
                         </p>
                         <p><span style="color: green;">Em estoque e pronto para envio.</span></p>
                     </div>
@@ -55,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (inputCEP.value) {
-                const fretes = gerarFretesAleatorios(); 
+                const fretes = gerarFretesAleatorios();
                 fretes.forEach((valor, index) => {
                     const label = document.createElement('label');
                     label.innerHTML = `
@@ -77,29 +91,47 @@ document.addEventListener('DOMContentLoaded', () => {
             exibirResumo(valorTotal);
 
             document.querySelectorAll('.quantidade-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
+                btn.addEventListener('click', async () => {
                     const id = btn.getAttribute('data-id');
                     const op = btn.getAttribute('data-op');
-                    const spanQuantidade = btn.parentElement.querySelector('.quantidade-text');
-                    let novaQtd = parseInt(spanQuantidade.textContent);
-
-                    if (op === 'add') novaQtd++;
-                    else if (op === 'sub' && novaQtd > 1) novaQtd--;
-                    else if (op === 'sub' && novaQtd === 1) {
-                        await fetch(`http://localhost:8080/api/carrinho/${id}`, { method: 'DELETE' });
+                    let novaQtd = parseInt(btn.getAttribute('data-qtd'));
+            
+                    console.log("Tentando atualizar/remover item. ID:", id, "Qtd atual:", novaQtd);
+            
+                    if (!id || id === "0") {
+                        console.error("Erro: ID inválido ao tentar atualizar/remover.");
+                        return;
+                    }
+            
+                    if (op === 'add') {
+                        novaQtd++;
+                    } else if (op === 'sub' && novaQtd > 1) {
+                        novaQtd--;
+                    } else if (op === 'sub' && novaQtd === 1) {
+                        console.log(`Removendo item ID: ${id}`);
+                        const response = await fetch(`http://127.0.0.1:8080/api/carrinho/${id}`, { method: 'DELETE' });
+            
+                        if (!response.ok) {
+                            console.error("Erro ao remover item.");
+                        }
+            
                         return atualizarCarrinho();
                     }
-
-                    await fetch(`http://localhost:8080/api/carrinho/atualizar/${id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(novaQtd)
+            
+                    const response = await fetch(`http://127.0.0.1:8080/api/carrinho/atualizar/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ quantidade: novaQtd }),
+                        credentials: "include"
                     });
-
-                    atualizarCarrinho();
+            
+                    if (response.ok) {
+                        atualizarCarrinho();
+                    } else {
+                        console.error("Falha ao atualizar quantidade.");
+                    }
                 });
             });
-
         } catch (error) {
             console.error("Erro ao atualizar o carrinho:", error);
             listaCarrinho.innerHTML = '<p>Erro ao carregar o carrinho.</p>';
@@ -124,9 +156,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     inputCEP.addEventListener('change', atualizarCarrinho);
+
     botaoLimpar.addEventListener('click', async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/carrinho/limpar', { method: 'DELETE' });
+            const response = await fetch('http://127.0.0.1:8080/api/carrinho/limpar', {
+                method: 'DELETE',
+                credentials: 'same-origin' 
+            });
+    
             if (!response.ok) throw new Error("Erro ao limpar o carrinho.");
             atualizarCarrinho();
         } catch (error) {
@@ -137,12 +174,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     finalizarCompra.addEventListener('click', async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/usuarios/sessao');
+            const response = await fetch('http://127.0.0.1:8080/api/usuarios/sessao', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+    
+            console.log("Resposta da verificação de sessão:", response.status);
+            debugger;
+    
             if (response.status === 401) {
-                window.location.href = '/ecommerce/frontend/login.html';
+                window.location.href = '/ecommerce/frontend/login.html'; 
+            } else if (response.status === 200) {
+                console.log("Usuário logado, redirecionando para o checkout...");
+                window.location.href = '/ecommerce/frontend/checkout.html'; 
             } else {
-                
-                window.location.href = '/ecommerce/frontend/checkout.html';
+                console.error('Erro desconhecido, status:', response.status);
             }
         } catch (error) {
             console.error("Erro ao verificar login:", error);
@@ -151,3 +197,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     atualizarCarrinho();
 });
+
