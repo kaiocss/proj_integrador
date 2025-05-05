@@ -26,6 +26,37 @@ public class Produto {
     private Status status;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ImagemProduto> imagens;package com.example.ecommerce.model;
+
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+
+@Entity
+@Table(name = "produtos")
+public class Produto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer codigo;
+
+    private String nome;
+    private BigDecimal avaliacao;
+    @Column(name = "descricaoDetalhada")
+    private String descricaoDetalhada;
+    @Column(name = "qtdEstoque")
+    private Integer qtdEstoque;
+    @Column(name = "valorProduto", nullable=false)
+    private BigDecimal valorProduto;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ItemPedido> itensPedido;
+
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ImagemProduto> imagens;
 
     public Integer getCodigo() {
