@@ -172,28 +172,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    finalizarCompra.addEventListener('click', async () => {
-        try {
-            const response = await fetch('http://127.0.0.1:8080/api/usuarios/sessao', {
-                method: 'GET',
-                credentials: 'same-origin'
-            });
+    finalizarCompra.addEventListener('click', () => {
+        const usuarioLogado = localStorage.getItem("usuarioLogado");
     
-            console.log("Resposta da verificação de sessão:", response.status);
-            debugger;
+        
+        window.location.href = '/ecommerce/frontend/checkout.html';
     
-            if (response.status === 401) {
-                window.location.href = '/ecommerce/frontend/login.html'; 
-            } else if (response.status === 200) {
-                console.log("Usuário logado, redirecionando para o checkout...");
-                window.location.href = '/ecommerce/frontend/checkout.html'; 
-            } else {
-                console.error('Erro desconhecido, status:', response.status);
-            }
-        } catch (error) {
-            console.error("Erro ao verificar login:", error);
+        
+        if (!usuarioLogado) {
+            console.log("Usuário não logado. Redirecionando para o login...");
+            
+        } else {
+            console.log("Usuário logado. Prosseguindo para o checkout...");
         }
     });
+    
+    
+    
+    
+    
+    
+    
 
     atualizarCarrinho();
 });
