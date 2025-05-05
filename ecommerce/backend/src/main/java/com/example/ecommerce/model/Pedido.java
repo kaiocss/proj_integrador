@@ -25,15 +25,13 @@ public class Pedido {
     @JoinColumn(name = "pagamento_id")
     private Pagamento pagamento;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<Produto> produtos;
-
     private String enderecoEntrega;
     private String formaPagamento;
     private double frete;
     private double totalGeral;
     private String status;
     private String numeroPedido;
+
 
     public Long getId() {
         return id;
@@ -67,12 +65,12 @@ public class Pedido {
         this.itens = itens;
     }
 
-    public List<Produto> getProdutos() {
-        return produtos;
+    public Pagamento getPagamento() {
+        return pagamento;
     }
 
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
+    public void setPagamento(Pagamento pagamento) {
+        this.pagamento = pagamento;
     }
 
     public String getEnderecoEntrega() {
@@ -123,4 +121,3 @@ public class Pedido {
         this.numeroPedido = numeroPedido;
     }
 }
-
