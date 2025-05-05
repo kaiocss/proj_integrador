@@ -18,20 +18,18 @@ public class OrderService {
     private PedidoRepository pedidoRepository;
 
     public OrderSummaryDTO getOrderSummary(Long orderId) {
-        // Busca o pedido no banco de dados pelo ID
+        
         Optional<Pedido> pedidoOptional = pedidoRepository.findById(orderId);
 
         if (pedidoOptional.isPresent()) {
             Pedido pedido = pedidoOptional.get();
 
-            // Converter Pedido para OrderSummaryDTO
             OrderSummaryDTO summaryDTO = new OrderSummaryDTO();
-            summaryDTO.setProdutos(pedido.getProdutos().stream().map(produto -> {
+            summaryDTO.setProdutos(pedido.getItens().stream().map(itemPedido -> {
                 OrderSummaryDTO.ProdutoDTO produtoDTO = new OrderSummaryDTO.ProdutoDTO();
-                produtoDTO.setNome(produto.getNome());
-                produtoDTO.setPrecoUnitario(produto.getValorProduto().doubleValue()); // Converte BigDecimal para double
-                produtoDTO.setQuantidade(produto.getQtdEstoque());
-                produtoDTO.setTotal(produto.getValorProduto().doubleValue() * produto.getQtdEstoque());
+                produtoDTO.setNome(itemPedido.getProduto().getNome());  
+                produtoDTO.setPrecoUnitario(itemPedido.getPrecoUnitario().doubleValue()); 
+                produtoDTO.setTotal(itemPedido.getPrecoUnitario().doubleValue() * itemPedido.getQuantidade());  
                 return produtoDTO;
             }).collect(Collectors.toList()));
             summaryDTO.setEnderecoEntrega(pedido.getEnderecoEntrega());
