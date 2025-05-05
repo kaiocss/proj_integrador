@@ -15,72 +15,86 @@ public class MenuProduto {
     // Vamos obter o usuário logado do SessionManager
     private static Usuario usuarioLogado = SessionManager.getUsuarioLogado();
 
-    static void listarProdutos() {
-        List<Produto> produtos = ProdutoDAO.listarProdutos();
+   public static void listarProdutos() {
+        List<Produto> produtos = ProdutoDAO.listarProdutos(); // Obtém todos os produtos
+        Scanner sc = new Scanner(System.in);
 
-        System.out.println("ID | Nome | Quantidade | Valor | Status");
-        for (Produto produto : produtos) {
-            System.out.println(produto.getCodigo() + " | " + produto.getNome() + " | " + produto.getQtdEstoque() + " | " + produto.getValorProduto() + " | " + produto.getStatus());
+        // Se a lista de produtos estiver vazia, exibe uma mensagem e retorna
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto encontrado.");
+            return;
         }
 
-        // Verifique se o usuário é um administrador antes de permitir a edição ou inclusão
-        if ("adm".equals(usuarioLogado.getGrupo())) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Escolha uma opção: 0 para voltar, ID do produto para editar, i para incluir");
-            String opcao = scanner.nextLine();
+        // Exibe a lista de produtos
+        System.out.println("ID | Nome | Quantidade | Valor | Status");
+        for (int i = 0; i < produtos.size(); i++) {
+            Produto p = produtos.get(i);
+            System.out.println((i + 1) + " | " + p.getNome() + " | " + p.getQtdEstoque() + " | " + p.getValorProduto() + " | " + p.getStatus());
+        }
 
-            if (opcao.equals("0")) {
-                Menu.exibirMenu();
-            } else if (opcao.equalsIgnoreCase("i")) {
-                incluirProduto();
-            } else {
-                try {
-                    int id = Integer.parseInt(opcao);
-                    editarProduto(id);
-                } catch (NumberFormatException e) {
-                    System.out.println("Opção inválida.");
-                }
-            }
-        } else if ("estoquista".equals(usuarioLogado.getGrupo())) {
-            // Estoquista pode ver e editar apenas a quantidade em estoque
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Escolha uma opção: 0 para voltar, ID do produto para editar quantidade");
-            String opcao = scanner.nextLine();
+        // Solicita ao administrador a ação desejada
+        System.out.print("Selecione o ID do produto para editar/habilitar/desabilitar, 0 para voltar e i para incluir: ");
+        String opcao = sc.nextLine();
 
-            if (opcao.equals("0")) {
-                return;
-            } else {
-                try {
-                    int id = Integer.parseInt(opcao);
-                    editarQuantidadeEstoque(id);
-                } catch (NumberFormatException e) {
-                    System.out.println("Opção inválida.");
-                }
-            }
-        } else {
-            System.out.println("Você não tem permissão para editar ou incluir produtos.");
+        // Caso a opção seja voltar
+        if (opcao.equals("0")) {
+            return; // Retorna para o menu anterior
+        }
+
+        // Caso a opção seja incluir, chama o método para incluir um novo produto
+        if (opcao.equalsIgnoreCase("i")) {
+            incluirProduto();
+            return;
+        }
+
+        // Caso contrário, seleciona o produto baseado no ID informado
+        int idEscolhido = Integer.parseInt(opcao);
+        Produto produtoEscolhido = produtos.get(idEscolhido - 1);
+
+        System.out.println("Produto selecionado:");
+        System.out.println(produtoEscolhido);
+
+        // Exibe opções de ações que podem ser feitas com o produto
+        System.out.println("""
+            Opções:
+            1) Alterar produto
+            2) Alterar quantidade em estoque
+            3) Habilitar/Desabilitar status
+            4) Voltar
+            """);
+
+        int acao = sc.nextInt();
+        sc.nextLine();  // Consumir a linha
+
+        switch (acao) {
+            case 1 -> editarProduto(produtoEscolhido); // Chama o método para alterar o produto
+            case 2 -> editarQuantidadeEstoque(produtoEscolhido);  // Chama o método para alterar a quantidade em estoque
+            case 3 -> habilitarDesabilitarProduto(produtoEscolhido);  // Habilitar/desabilitar status do produto
+            case 4 -> { /* Volta para a lista de produtos */ }
+            default -> System.out.println("Opção inválida.");
         }
     }
 
+    // Método para incluir um novo produto
     private static void incluirProduto() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
         System.out.println("Informe o nome do produto: ");
-        String nome = scanner.nextLine();
+        String nome = sc.nextLine();
 
         System.out.println("Informe a avaliação (1.0 a 5.0): ");
-        double avaliacao = scanner.nextDouble();
-        scanner.nextLine();  // Consumir a quebra de linha após o double
+        double avaliacao = sc.nextDouble();
+        sc.nextLine();  // Consumir a quebra de linha após o double
 
         System.out.println("Informe a descrição detalhada do produto: ");
-        String descricaoDetalhada = scanner.nextLine();
+        String descricaoDetalhada = sc.nextLine();
 
         System.out.println("Informe a quantidade em estoque: ");
-        int qtdEstoque = scanner.nextInt();
+        int qtdEstoque = sc.nextInt();
 
         System.out.println("Informe o valor do produto: ");
-        double valorProduto = scanner.nextDouble();
-        scanner.nextLine();  // Consumir a quebra de linha após o double
+        double valorProduto = sc.nextDouble();
+        sc.nextLine();  // Consumir a quebra de linha após o double
 
         // Aqui, em vez de solicitar o status, definimos como "ativo"
         String status = "ativo"; // Produto será sempre ativo
@@ -90,10 +104,41 @@ public class MenuProduto {
             String resultado = produtoDAO.cadastrarProduto(nome, avaliacao, descricaoDetalhada, qtdEstoque, valorProduto, status);
             System.out.println(resultado);
             int produtoId = produtoDAO.obterUltimoProdutoId(); 
-            incluirImagem(produtoId); 
+            incluirImagem(produtoId); // Método para incluir imagem (se necessário)
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar produto: " + e.getMessage());
         }
+
+        listarProdutos(); // Volta para a lista de produtos
+    }
+
+    private static void editarProduto(Produto produto) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Editar produto: " + produto.getNome());
+
+        System.out.println("Novo nome: ");
+        produto.setNome(sc.nextLine());
+
+        System.out.println("Nova avaliação (1.0 a 5.0): ");
+        produto.setAvaliacao(sc.nextDouble());
+        sc.nextLine(); // Consumir a quebra de linha após o double
+
+        System.out.println("Nova descrição detalhada: ");
+        produto.setDescricaoDetalhada(sc.nextLine());
+
+        System.out.println("Nova quantidade em estoque: ");
+        produto.setQtdEstoque(sc.nextInt());
+
+        System.out.println("Novo valor do produto: ");
+        produto.setValorProduto(sc.nextDouble());
+        sc.nextLine(); 
+
+        System.out.println("Novo status (ativo/desativado): ");
+        produto.setStatus(sc.nextLine());
+
+        ProdutoDAO produtoDAO = new ProdutoDAO();
+        String resultado = produtoDAO.atualizarProduto(produto);
+        System.out.println(resultado);
 
         listarProdutos(); 
     }
@@ -143,6 +188,28 @@ public class MenuProduto {
 
         listarProdutos(); // Volta para a lista de produtos
     }
+
+     private static void habilitarDesabilitarProduto(Produto produto) {
+        Scanner sc = new Scanner(System.in);
+        String statusAtual = produto.getStatus();
+        String novoStatus = statusAtual.equalsIgnoreCase("ativo") ? "desativado" : "ativo";
+
+        System.out.println("Status atual: " + statusAtual);
+        System.out.print("Alterar status para " + novoStatus + "? (Y/N): ");
+        String opcao = sc.nextLine();
+
+        if (opcao.equalsIgnoreCase("Y")) {
+            produto.setStatus(novoStatus);
+            ProdutoDAO produtoDAO = new ProdutoDAO();
+            String resultado = produtoDAO.atualizarProduto(produto);
+            System.out.println("Status alterado com sucesso.");
+        } else {
+            System.out.println("Operação cancelada.");
+        }
+
+        listarProdutos();
+    }
+
 
     private static void editarQuantidadeEstoque(int id) {
         ProdutoDAO produtoDAO = new ProdutoDAO();
