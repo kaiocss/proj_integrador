@@ -18,11 +18,6 @@ public class MenuProduto {
         List<Produto> produtos = ProdutoDAO.listarProdutos();
         Scanner sc = new Scanner(System.in);
 
-        if (produtos.isEmpty()) {
-            System.out.println("Nenhum produto encontrado.");
-            return;
-        }
-
         System.out.println("ID | Nome | Quantidade | Valor | Status");
         for (int i = 0; i < produtos.size(); i++) {
             Produto p = produtos.get(i);
