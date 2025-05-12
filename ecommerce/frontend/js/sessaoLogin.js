@@ -19,10 +19,20 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log("Usuário logado:", usuario);
             userButton.innerText = "Olá, " + usuario.nome;
 
-            userButton.addEventListener('click', () => {
-                menuDropdown.style.display = menuDropdown.style.display === "none" ? "block" : "none";
+            // Toggle dropdown
+            userButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Impede que o clique feche o menu imediatamente
+                menuDropdown.style.display = menuDropdown.style.display === "block" ? "none" : "block";
             });
 
+            // Oculta dropdown ao clicar fora
+            document.addEventListener('click', (event) => {
+                if (!userMenu.contains(event.target)) {
+                    menuDropdown.style.display = "none";
+                }
+            });
+
+            // Logout
             logoutBtn.addEventListener('click', async () => {
                 const confirmLogout = confirm("Você está prestes a sair. Deseja continuar?");
                 if (confirmLogout) {
@@ -30,15 +40,12 @@ document.addEventListener('DOMContentLoaded', async function () {
                         method: "POST",
                         credentials: "include"
                     });
-                    
+
                     alert("Você foi deslogado com sucesso!");
-                    
-                    userButton.innerText = "Login";  
-                    userMenu.innerHTML = `<a href="login.html">Entre ou Cadastre-se</a>`;  
-                    window.location.href = "index.html";  
+                    window.location.href = "index.html"; // Redireciona direto sem reescrever DOM
                 }
             });
-            
+
         } else {
             console.log("Usuário não logado.");
             userMenu.innerHTML = `<a href="login.html">Entre ou Cadastre-se</a>`;
