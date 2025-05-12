@@ -48,8 +48,7 @@ document.getElementById('formCadastro').addEventListener('submit', async functio
     genero,
     enderecoFaturamento,
     enderecosEntrega
-};
-
+  };
 
   try {
     const response = await fetch("http://localhost:8080/api/usuarios/cadastro", {
@@ -61,7 +60,18 @@ document.getElementById('formCadastro').addEventListener('submit', async functio
 
     if (response.ok) {
       const resultado = await response.json();
-  
+
+      // Salvar dados no localStorage para uso em alterar.html
+      const dadosParaArmazenar = {
+        nome,
+        email,
+        cpf,
+        dataNascimento,
+        genero
+      };
+      localStorage.setItem('dadosUsuario', JSON.stringify(dadosParaArmazenar));
+      localStorage.setItem('enderecos', JSON.stringify([enderecoFaturamento, ...enderecosEntrega]));
+
       if (resultado.redirect === "carrinho") {
         window.location.href = "/ecommerce/frontend/carrinho.html";
       } else {
@@ -87,7 +97,7 @@ function validarNome(nome) {
 }
 
 function validarCPF(cpf) {
-  return /^\d{11}$/.test(cpf); // Simples validação inicial
+  return /^\d{11}$/.test(cpf); // Validação simples
 }
 
 function validarEndereco(endereco) {
