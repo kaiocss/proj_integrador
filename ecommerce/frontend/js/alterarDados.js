@@ -1,145 +1,201 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Formulários
-    const formEditarDados = document.getElementById('formEditarDados');
-    const formTrocarSenha = document.getElementById('formTrocarSenha');
-    const formNovoEndereco = document.getElementById('formNovoEndereco');
+document.addEventListener('DOMContentLoaded', async function () {
+    const formDados = document.getElementById("formEditarDados");
+    const formSenha = document.getElementById("formTrocarSenha");
+    const formEndereco = document.getElementById("formNovoEndereco");
 
-    // Mensagens
-    const mensagemDados = document.getElementById('mensagemDados');
-    const mensagemSenha = document.getElementById('mensagemSenha');
-    const mensagemEndereco = document.getElementById('mensagemEndereco');
+    const mensagemDados = document.getElementById("mensagemDados");
+    const mensagemSenha = document.getElementById("mensagemSenha");
+    const mensagemEndereco = document.getElementById("mensagemEndereco");
 
-    // Campos de endereço
-    const cepInput = document.getElementById('cep');
-    const ruaInput = document.getElementById('rua');
-    const bairroInput = document.getElementById('bairro');
-    const cidadeInput = document.getElementById('cidade');
-    const ufInput = document.getElementById('uf');
-
-    const listaEnderecos = document.getElementById('listaEnderecos');
-
-    // Carregar endereços do localStorage
-    let enderecos = JSON.parse(localStorage.getItem('enderecos')) || [];
-
-    // Preencher endereço via API do ViaCEP
-    cepInput.addEventListener('blur', () => {
-        const cep = cepInput.value.replace(/\D/g, '');
-
-        if (cep.length === 8) {
-            fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.erro) {
-                        mensagemEndereco.textContent = "CEP não encontrado.";
-                        mensagemEndereco.style.display = "block";
-                        mensagemEndereco.style.color = "red";
-                    } else {
-                        ruaInput.value = data.logradouro || '';
-                        bairroInput.value = data.bairro || '';
-                        cidadeInput.value = data.localidade || '';
-                        ufInput.value = data.uf || '';
-                        mensagemEndereco.style.display = "none";
-                    }
-                })
-                .catch(() => {
-                    mensagemEndereco.textContent = "Erro ao buscar o CEP.";
-                    mensagemEndereco.style.display = "block";
+    const buscarEnderecoPorCep = async (cep) => {
+        const cepLimpo = cep.replace(/\D/g, ""); 
+        if (cepLimpo.length === 8) {
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+                if (!response.ok) throw new Error("Erro ao buscar CEP.");
+                
+                const dados = await response.json();
+                if (!dados.erro) {
+                    document.getElementById("rua").value = dados.logradouro || "";
+                    document.getElementById("bairro").value = dados.bairro || "";
+                    document.getElementById("cidade").value = dados.localidade || "";
+                    document.getElementById("uf").value = dados.uf || "";
+                } else {
+                    mensagemEndereco.innerText = "CEP inválido ou não encontrado.";
                     mensagemEndereco.style.color = "red";
-                });
+                    mensagemEndereco.style.display = "block";
+                }
+            } catch (error) {
+                mensagemEndereco.innerText = "Erro ao buscar informações do CEP. Tente novamente.";
+                mensagemEndereco.style.color = "red";
+                mensagemEndereco.style.display = "block";
+                console.error("Erro ao buscar CEP:", error);
+            }
+        } else {
+            mensagemEndereco.innerText = "CEP inválido. Certifique-se de que contém 8 dígitos.";
+            mensagemEndereco.style.color = "red";
+            mensagemEndereco.style.display = "block";
+        }
+    };
+
+    document.getElementById("cep").addEventListener("blur", function () {
+        const cep = this.value;
+        buscarEnderecoPorCep(cep);
+    });
+
+    try {
+        const response = await fetch("http://127.0.0.1:8080/api/usuarios/sessao", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            console.warn("Sessão inválida. Redirecionando para a página de login...");
+            window.location.href = "/ecommerce/frontend/login.html";
+            return;
+        }
+
+        const usuarioLogado = await response.json();
+
+        document.getElementById("nome").value = usuarioLogado.nome || "";
+        document.getElementById("dataNascimento").value = usuarioLogado.dataNascimento || "";
+        document.getElementById("genero").value = usuarioLogado.genero || "";
+
+
+    } catch (error) {
+        console.error("Erro ao buscar sessão do usuário:", error);
+        window.location.href = "/ecommerce/frontend/login.html";
+    }
+
+    formDados.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+    
+        const nome = document.getElementById("nome").value;
+        const dataNascimento = document.getElementById("dataNascimento").value;
+        const genero = document.getElementById("genero").value;
+
+        const dadosAtualizados = { nome, dataNascimento, genero };
+
+        try {
+            const response = await fetch("http://127.0.0.1:8080/api/usuarios/atualizar", {
+                method: "PUT",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dadosAtualizados)
+            });
+
+            if (response.ok) {
+                const usuarioAtualizado = await response.json();
+                mensagemDados.innerText = "Alterações salvas com sucesso!";
+                mensagemDados.textContent = `Dados atualizados com sucesso!
+                Nome: ${nome}
+                Data de Nascimento: ${dataNascimento}
+                Gênero: ${genero}`;
+                mensagemDados.style.color = "green";
+                mensagemDados.style.display = "block";
+            } else {
+                const erro = await response.text();
+                mensagemDados.innerText = `Erro: ${erro}`;
+                mensagemDados.style.color = "red";
+                mensagemDados.style.display = "block";
+            }
+        } catch (error) {
+            console.error("Erro ao atualizar dados:", error);
+            mensagemDados.innerText = "Erro ao atualizar. Tente novamente.";
+            mensagemDados.style.color = "red";
+            mensagemDados.style.display = "block";
         }
     });
 
-    // Editar dados pessoais
-    formEditarDados.addEventListener('submit', (e) => {
+    formSenha.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        const nome = document.getElementById('nome').value;
-        const dataNascimento = document.getElementById('dataNascimento').value;
-        const genero = document.getElementById('genero').value;
-
-        console.log("Enviando dados pessoais:", { nome, dataNascimento, genero });
-
-        mensagemDados.textContent = `Dados atualizados com sucesso!
-        Nome: ${nome}
-        Data de Nascimento: ${dataNascimento}
-        Gênero: ${genero}`;
-        mensagemDados.style.display = "block";
-        mensagemDados.style.color = "green";
-    });
-
-    // Trocar senha
-    formTrocarSenha.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const senhaAtual = document.getElementById('senhaAtual').value.trim();
-        const novaSenha = document.getElementById('novaSenha').value.trim();
-        const confirmarSenha = document.getElementById('confirmarSenha').value.trim();
+        const senhaAtual = document.getElementById("senhaAtual").value;
+        const novaSenha = document.getElementById("novaSenha").value;
+        const confirmarSenha = document.getElementById("confirmarSenha").value;
 
         if (!senhaAtual || !novaSenha || !confirmarSenha) {
-            mensagemSenha.textContent = "Todos os campos são obrigatórios!";
-            mensagemSenha.style.display = "block";
+            mensagemSenha.innerText = "Preencha todos os campos.";
             mensagemSenha.style.color = "red";
+            mensagemSenha.style.display = "block";
             return;
         }
 
         if (novaSenha !== confirmarSenha) {
-            mensagemSenha.textContent = "As senhas não coincidem!";
-            mensagemSenha.style.display = "block";
+            mensagemSenha.innerText = "As senhas não coincidem.";
             mensagemSenha.style.color = "red";
+            mensagemSenha.style.display = "block";
             return;
         }
 
-        console.log("Alterando senha:", { senhaAtual, novaSenha });
+        const dadosSenha = { senhaAtual, novaSenha };
 
-        mensagemSenha.textContent = "Senha atualizada com sucesso!";
-        mensagemSenha.style.display = "block";
-        mensagemSenha.style.color = "green";
+        try {
+            const response = await fetch("http://127.0.0.1:8080/api/usuarios/alterarSenha", {
+                method: "PUT",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dadosSenha)
+            });
+
+            if (response.ok) {
+                mensagemSenha.innerText = "Senha alterada com sucesso!";
+                mensagemSenha.style.color = "green";
+                mensagemSenha.style.display = "block";
+            } else {
+                const erro = await response.text();
+                mensagemSenha.innerText = `Erro: ${erro}`;
+                mensagemSenha.style.color = "red";
+                mensagemSenha.style.display = "block";
+            }
+        } catch (error) {
+            console.error("Erro ao alterar senha:", error);
+            mensagemSenha.innerText = "Erro ao alterar senha. Tente novamente.";
+            mensagemSenha.style.color = "red";
+            mensagemSenha.style.display = "block";
+        }
     });
 
-    // Renderizar lista de endereços
-    function renderizarEnderecos() {
-        if (!listaEnderecos) return;
-        listaEnderecos.innerHTML = '';
-
-        enderecos.forEach((endereco) => {
-            const li = document.createElement('li');
-            li.textContent = `${endereco.rua}, ${endereco.numero} - ${endereco.bairro}, ${endereco.cidade}/${endereco.uf} - CEP: ${endereco.cep}` +
-                (endereco.enderecoPadrao ? " ✅ Endereço Padrão" : "");
-            listaEnderecos.appendChild(li);
-        });
-    }
-
-    // Adicionar novo endereço
-    formNovoEndereco.addEventListener('submit', (e) => {
+    formEndereco.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        const novoEndereco = {
-            cep: cepInput.value,
-            rua: ruaInput.value,
-            numero: document.getElementById('numero').value,
-            complemento: document.getElementById('complemento').value,
-            bairro: bairroInput.value,
-            cidade: cidadeInput.value,
-            uf: ufInput.value,
-            enderecoPadrao: document.getElementById('enderecoPadrao')?.checked || false
-        };
+        const cep = document.getElementById("cep").value;
+        const rua = document.getElementById("rua").value;
+        const numero = document.getElementById("numero").value;
+        const complemento = document.getElementById("complemento").value || "";
+        const bairro = document.getElementById("bairro").value;
+        const cidade = document.getElementById("cidade").value;
+        const uf = document.getElementById("uf").value;
 
-        // Não alterar os endereços existentes, apenas adicionar o novo
-        if (novoEndereco.enderecoPadrao) {
-            enderecos.forEach(end => end.enderecoPadrao = false); // Remove o padrão anterior
+        const endereco = { cep, logradouro: rua, numero, complemento, bairro, cidade, uf };
+
+        try {
+            const response = await fetch("http://127.0.0.1:8080/api/usuarios/enderecos", {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(endereco)
+            });
+
+            if (response.ok) {
+                mensagemEndereco.innerText = "Endereço alterado com sucesso!";
+                mensagemEndereco.style.color = "green";
+                mensagemEndereco.style.display = "block";
+            } else {
+                const erro = await response.text();
+                mensagemEndereco.innerText = `Erro: ${erro}`;
+                mensagemEndereco.style.color = "red";
+                mensagemEndereco.style.display = "block";
+            }
+        } catch (error) {
+            console.error("Erro ao adicionar endereço:", error);
+            mensagemEndereco.innerText = "Erro ao adicionar endereço. Tente novamente.";
+            mensagemEndereco.style.color = "red";
+            mensagemEndereco.style.display = "block";
         }
-
-        enderecos.push(novoEndereco); // Adiciona o novo endereço
-        localStorage.setItem('enderecos', JSON.stringify(enderecos));
-
-        mensagemEndereco.textContent = "Endereço adicionado com sucesso!";
-        mensagemEndereco.style.display = "block";
-        mensagemEndereco.style.color = "green";
-
-        renderizarEnderecos(); // Atualiza a lista
-        formNovoEndereco.reset(); // Reseta o formulário
     });
-
+});
     // Inicializar renderização ao carregar a página
     renderizarEnderecos();
 });
