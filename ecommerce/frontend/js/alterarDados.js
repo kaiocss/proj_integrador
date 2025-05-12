@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             mensagemSenha.style.display = "block";
         }
     });
-
+// adicionar endereço antigo, alterações precisam estar a partir daqui 
     formEndereco.addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -196,6 +196,5 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 });
-    // Inicializar renderização ao carregar a página
     renderizarEnderecos();
 });
