@@ -185,55 +185,52 @@ public class MenuProduto {
 
             boolean principal = "Y".equalsIgnoreCase(imagemPrincipal);
 
-            if (principal) {
-                produtoDAO.atualizarImagemPrincipal(produtoId, 0, diretorioOrigem);
-            }
+           produtoDAO.cadastrarImagemProduto(produtoId, nomeArquivo, diretorioOrigem, principal);
 
-            produtoDAO.cadastrarImagemProduto(produtoId, nomeArquivo, diretorioOrigem, principal);
+          System.out.println("\nSalvar e incluir mais uma imagem (1), Salvar e finalizar (2), Não salvar e finalizar (3): ");
+          int opcao = sc.nextInt();
+          sc.nextLine(); 
 
-            System.out.println("Salvar e incluir mais uma imagem (1), Salvar e finalizar (2), Não salvar e finalizar (3) => ");
-            int opcao = sc.nextInt();
-            sc.nextLine();
-
-            switch (opcao) {
-                case 1:
-                    break;
-                case 2:
-                    salvarImagens(produtoId, nomeArquivo, diretorioOrigem);
-                    continuar = false;
-                    break;
-                case 3:
-                    continuar = false;
-                    break;
-                default:
-                    System.out.println("Opção inválida!");
-            }
+        switch (opcao) {
+            case 1:
+                break; 
+            case 2:
+                salvarImagemFisica(produtoId, nomeArquivo, diretorioOrigem);
+                System.out.println("Imagens salvas. Redirecionando para lista de produtos...");
+                continuar = false;
+                break;
+            case 3:
+                System.out.println("Cadastro de imagem cancelado.");
+                continuar = false;
+                break;
+            default:
+                System.out.println("Opção inválida.");
+                continuar = false;
         }
+      }
     }
 
-    private static boolean salvarImagens(int produtoId, String nomeArquivo, String diretorioOrigem) {
-        if (produtoId <= 0) {
-            System.err.println("Erro: ID do produto inválido.");
-            return false;
-        }
+      private static boolean salvarImagemFisica(int produtoId, String nomeArquivo, String diretorioOrigem) {
+       File origem = new File(diretorioOrigem);
+        if (!origem.exists()) {
+        System.err.println("Arquivo de origem não encontrado.");
+        return false;
+       }  
 
-        String diretorioDestino = diretorioOrigem + File.separator + nomeArquivo;
-        File diretorio = new File(diretorioDestino);
+      File destinoDir = new File("imagens/" + produtoId);
+      if (!destinoDir.exists()) {
+        destinoDir.mkdirs();
+      }
 
-        try {
-            if (!diretorio.exists() && diretorio.mkdirs()) {
-                System.out.println("Imagens salvas com sucesso no diretório: " + diretorioDestino);
-                return true;
-            } else if (diretorio.exists()) {
-                System.out.println("O diretório já existe: " + diretorioDestino);
-                return true;
-            } else {
-                System.err.println("Erro ao criar o diretório: " + diretorioDestino);
-            }
-        } catch (SecurityException e) {
-            System.err.println("Erro de permissão ao criar o diretório: " + e.getMessage());
-        }
+      File destino = new File(destinoDir, nomeArquivo);
 
+      try {
+        Files.copy(origem.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        System.out.println("Imagem copiada para: " + destino.getPath());
+        return true;
+      } catch (IOException e) {
+        System.err.println("Erro ao copiar a imagem: " + e.getMessage());
         return false;
     }
+  }
 }
