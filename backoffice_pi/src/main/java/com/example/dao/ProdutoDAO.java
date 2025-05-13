@@ -65,33 +65,43 @@ public static List<Produto> listarProdutos() {
     return produtos;
     }
 
-       public void cadastrarImagemProduto(int produtoId, String nomeArquivo, String diretorioOrigem, boolean principal) throws SQLException {
-        String sql = "INSERT INTO imagensProduto (produto_id, nome_arquivo, diretorio_origem, principal) VALUES (?, ?, ?, ?)";
-    
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-    
-            statement.setInt(1, produtoId);
-            statement.setString(2, nomeArquivo);
-            statement.setString(3, diretorioOrigem);
-            statement.setBoolean(4, principal);
-    
-            statement.executeUpdate();
+    public void cadastrarImagemProduto(int produtoId, String nomeArquivo, String diretorioOrigem, boolean principal) throws SQLException {
+     String desmarcarSql = "UPDATE imagensProduto SET principal = false WHERE produto_id = ?";
+     String insertSql = "INSERT INTO imagensProduto (produto_id, nome_arquivo, diretorio_origem, principal) VALUES (?, ?, ?, ?)";
+
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+        connection.setAutoCommit(false); 
+
+        if (principal) {
+            try (PreparedStatement desmarcar = connection.prepareStatement(desmarcarSql)) {
+                desmarcar.setInt(1, produtoId);
+                desmarcar.executeUpdate();
+            }
         }
+
+        try (PreparedStatement inserir = connection.prepareStatement(insertSql)) {
+            inserir.setInt(1, produtoId);
+            inserir.setString(2, nomeArquivo);
+            inserir.setString(3, diretorioOrigem);
+            inserir.setBoolean(4, principal);
+            inserir.executeUpdate();
+        }
+
+        connection.commit();
     }
+}
 
     public void atualizarImagemPrincipal(int produtoId, int imagemId, String diretorio) throws SQLException {
         String sqlUpdatePrincipal = "UPDATE imagensProduto SET principal = false WHERE produto_id = ?";
         String sqlSetPrincipal = "UPDATE imagensProduto SET principal = true, diretorio_origem = ? WHERE id = ?";
     
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            // Desmarcar outras imagens do produto
+    
             try (PreparedStatement statement = connection.prepareStatement(sqlUpdatePrincipal)) {
                 statement.setInt(1, produtoId);
                 statement.executeUpdate();
             }
     
-            // Definir a nova imagem como principal e atualizar o diretório
             try (PreparedStatement statement = connection.prepareStatement(sqlSetPrincipal)) {
                 statement.setString(1, diretorio);
                 statement.setInt(2, imagemId);
@@ -103,7 +113,6 @@ public static List<Produto> listarProdutos() {
 
     public boolean alterarImagemProduto(int imagemId, String novoNomeArquivo, String novoDiretorio, boolean principal) throws SQLException {
         if (principal) {
-            // Desmarcar outras imagens principais do mesmo produto
             String sqlUpdatePrincipal = "UPDATE imagensProduto SET principal = false WHERE produto_id = (SELECT produto_id FROM imagensProduto WHERE id = ?)";
     
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
