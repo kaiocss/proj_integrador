@@ -126,9 +126,6 @@ public class MenuProduto {
         produto.setValorProduto(sc.nextDouble());
         sc.nextLine();
 
-        System.out.println("Novo status (ativo/desativado): ");
-        produto.setStatus(sc.nextLine());
-
         ProdutoDAO produtoDAO = new ProdutoDAO();
         String resultado = produtoDAO.atualizarProduto(produto);
         System.out.println(resultado);
