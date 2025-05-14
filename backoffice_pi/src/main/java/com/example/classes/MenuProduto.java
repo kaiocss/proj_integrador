@@ -1,12 +1,15 @@
 package com.example.classes;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import com.example.dao.ProdutoDAO;
-import com.example.models.ImagemProduto;
 import com.example.models.Produto;
 import com.example.models.Usuario;
 
@@ -169,33 +172,41 @@ public class MenuProduto {
         listarProdutos();
     }
 
-    private static void incluirImagem(int produtoId) throws SQLException {
-        Scanner sc = new Scanner(System.in);
-        ProdutoDAO produtoDAO = new ProdutoDAO();
-        boolean continuar = true;
+   private static void incluirImagem(int produtoId) throws SQLException {
+    Scanner sc = new Scanner(System.in);
+    ProdutoDAO produtoDAO = new ProdutoDAO();
+    boolean continuar = true;
 
-        while (continuar) {
-            System.out.println("Incluir imagem do produto");
-            System.out.println("Nome do arquivo => ");
-            String nomeArquivo = sc.nextLine();
-            System.out.println("Diretório de origem => ");
-            String diretorioOrigem = sc.nextLine();
-            System.out.println("É a imagem principal? (Y/N) => ");
-            String imagemPrincipal = sc.nextLine();
+    List<String[]> imagensParaSalvar = new ArrayList<>();
 
-            boolean principal = "Y".equalsIgnoreCase(imagemPrincipal);
+    while (continuar) {
+        System.out.println("Incluir imagem do produto");
+        System.out.println("Nome do arquivo => ");
+        String nomeArquivo = sc.nextLine();
 
-           produtoDAO.cadastrarImagemProduto(produtoId, nomeArquivo, diretorioOrigem, principal);
+        System.out.println("Diretório de origem => ");
+        String diretorioOrigem = sc.nextLine();
 
-          System.out.println("\nSalvar e incluir mais uma imagem (1), Salvar e finalizar (2), Não salvar e finalizar (3): ");
-          int opcao = sc.nextInt();
-          sc.nextLine(); 
+        System.out.println("É a imagem principal? (Y/N) => ");
+        String imagemPrincipal = sc.nextLine();
+
+        boolean principal = "Y".equalsIgnoreCase(imagemPrincipal);
+
+        produtoDAO.cadastrarImagemProduto(produtoId, nomeArquivo, diretorioOrigem, principal);
+
+        imagensParaSalvar.add(new String[]{nomeArquivo, diretorioOrigem});
+
+        System.out.println("\nSalvar e incluir mais uma imagem (1), Salvar e finalizar (2), Não salvar e finalizar (3): ");
+        int opcao = sc.nextInt();
+        sc.nextLine(); 
 
         switch (opcao) {
             case 1:
-                break; 
+                break;
             case 2:
-                salvarImagemFisica(produtoId, nomeArquivo, diretorioOrigem);
+                for (String[] img : imagensParaSalvar) {
+                    salvarImagemFisica(produtoId, img[0], img[1]);
+                }
                 System.out.println("Imagens salvas. Redirecionando para lista de produtos...");
                 continuar = false;
                 break;
@@ -207,7 +218,8 @@ public class MenuProduto {
                 System.out.println("Opção inválida.");
                 continuar = false;
         }
-      }
+    }
+
     }
 
       private static boolean salvarImagemFisica(int produtoId, String nomeArquivo, String diretorioOrigem) {

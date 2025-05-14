@@ -28,9 +28,14 @@ const carregarProdutos = async () => {
         
                 const card = document.createElement('div'); 
                 card.classList.add('produto-card');
+                const nomeImagem = produto.imagens?.[0]?.nomeArquivo;
+                const imgSrc = nomeImagem 
+                ? `http://127.0.0.1:8080/imagens/${produto.codigo}/${nomeImagem}` 
+                : '/ecommerce/frontend/assets/default.png';
+
         
                 card.innerHTML = `
-                    <img src="${produto.imagens?.[0]?.diretorioOrigem || '/ecommerce/frontend/assets/default.png'}" alt="${produto.nome}" class="produto-imagem">
+                    <img src="${imgSrc}" alt="${produto.nome}" class="produto-imagem">
                     <div class="produto-info">
                         <h3>${produto.nome}</h3>
                         <p>${produto.avaliacao !== null ? produto.avaliacao + ' ⭐' : 'Sem avaliação'}</p>

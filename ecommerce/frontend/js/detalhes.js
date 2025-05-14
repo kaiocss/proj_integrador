@@ -31,7 +31,12 @@ const carregarDetalhesProduto = async () => {
         produtoImagens.forEach((imagem) => {
             const slide = document.createElement("div");
             slide.classList.add("swiper-slide");
-            slide.innerHTML = `<img src="${imagem.diretorioOrigem || "/ecommerce/frontend/assets/default.png"}" alt="Imagem do Produto">`;
+        
+            const imagemSrc = imagem.nomeArquivo
+                ? `http://127.0.0.1:8080/imagens/${imagem.produtoId || produto.codigo}/${imagem.nomeArquivo}`
+                : "/ecommerce/frontend/assets/default.png";
+        
+            slide.innerHTML = `<img src="${imagemSrc}" alt="${produto.nome}">`;
             swiperWrapper.appendChild(slide);
         });
 

@@ -22,10 +22,9 @@ public class BackofficeMain {
         if(usuario != null){
             System.out.println("Login bem-sucedido! Bem-vindo, " + usuario.getEmail());
 
-            // Configura o usuário logado na sessão
             SessionManager.setUsuarioLogado(usuario);
 
-            Menu.exibirMenu(); // Agora o menu obtém o usuário diretamente da sessão
+            Menu.exibirMenu(); 
         } else{
             System.out.println("<< Não foi possível identificar o usuário, tente novamente >>");
         }
