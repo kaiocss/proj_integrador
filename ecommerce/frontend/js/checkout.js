@@ -1,19 +1,44 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const usuarioLogado = localStorage.getItem("usuarioLogado");
-    let usuario = null;
+document.addEventListener("DOMContentLoaded", async () => {
+    // Função para verificar sessão direto no backend
+    async function verificarSessao() {
+        try {
+            const response = await fetch("http://127.0.0.1:8080/api/usuarios/sessao", {
+                method: "GET",
+                credentials: "include" // importante para enviar cookies
+            });
 
-    // Verifica se o usuário está logado e preenche os dados no formulário
-    if (usuarioLogado) {
-        usuario = JSON.parse(usuarioLogado);
-        console.log("Usuário logado:", usuario);
+            if (!response.ok) {
+                // Não está logado
+                window.location.href = "login.html";
+                return null;
+            }
 
-        // Preencher automaticamente os dados do cliente no formulário
-        document.getElementById("nome").value = usuario.nome || "";
-        document.getElementById("email").value = usuario.email || "";
-        document.getElementById("telefone").value = usuario.telefone || "";
-    } else {
-        console.warn("Usuário não está logado. Continuando com a compra como anônimo...");
+            const usuario = await response.json();
+            if (!usuario || !usuario.nome) {
+                window.location.href = "login.html";
+                return null;
+            }
+
+            return usuario;
+        } catch (error) {
+            console.error("Erro ao verificar sessão:", error);
+            window.location.href = "login.html";
+            return null;
+        }
     }
+
+    // Primeiro, verifica a sessão
+    const usuario = await verificarSessao();
+    if (!usuario) {
+        return; // já redirecionou para login
+    }
+
+    console.log("Usuário logado:", usuario);
+
+    // Preencher automaticamente os dados do cliente no formulário
+    document.getElementById("nome").value = usuario.nome || "";
+    document.getElementById("email").value = usuario.email || "";
+    document.getElementById("telefone").value = usuario.telefone || "";
 
     const orderItemsContainer = document.getElementById("order-items");
     const totalValueElement = document.getElementById("total-price");
@@ -24,12 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let totalPrice = 0;
 
-    // Carregar itens do carrinho
+    // Carregar itens do carrinho da sessão
     const cartItems = JSON.parse(sessionStorage.getItem("carrinhoTemporario") || "[]");
 
     cartItems.forEach(item => {
         const li = document.createElement("li");
-        li.textContent = `${item.produto.nome} - R$ ${item.produto.valorProduto} x ${item.quantidade}`;
+        li.textContent = `${item.produto.nome} - R$ ${item.produto.valorProduto.toFixed(2)} x ${item.quantidade}`;
         orderItemsContainer.appendChild(li);
         totalPrice += item.produto.valorProduto * item.quantidade;
     });
@@ -78,17 +103,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Exibir o formulário para adicionar um novo endereço
     btnAdicionarEndereco.addEventListener("click", () => {
         formNovoEndereco.style.display = "block";
     });
 
-    // Salvar novo endereço
     salvarEnderecoBtn.addEventListener("click", () => {
-        const rua = document.getElementById("novo-endereco-rua").value;
-        const cep = document.getElementById("novo-endereco-cep").value;
-        const cidade = document.getElementById("novo-endereco-cidade").value;
-        const estado = document.getElementById("novo-endereco-estado").value;
+        const rua = document.getElementById("novo-endereco-rua").value.trim();
+        const cep = document.getElementById("novo-endereco-cep").value.trim();
+        const cidade = document.getElementById("novo-endereco-cidade").value.trim();
+        const estado = document.getElementById("novo-endereco-estado").value.trim();
 
         if (!rua || !cep || !cidade || !estado) {
             alert("Por favor, preencha todos os campos do novo endereço.");
@@ -99,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
         enderecos.push(novoEndereco);
         localStorage.setItem("enderecos", JSON.stringify(enderecos));
 
-        // limpar campos
+        // Limpar campos
         document.getElementById("novo-endereco-rua").value = "";
         document.getElementById("novo-endereco-cep").value = "";
         document.getElementById("novo-endereco-cidade").value = "";
@@ -109,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderizarEnderecos();
     });
 
-    // Finalizar pedido
     finalizarPedidoButton.addEventListener("click", async (e) => {
         e.preventDefault();
 
@@ -120,11 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (selectedPayment === "cartao") {
-            const numeroCartao = document.getElementById("numero-cartao").value;
-            const codigoCartao = document.getElementById("codigo-cartao").value;
-            const nomeCartao = document.getElementById("nome-cartao").value;
-            const vencimentoCartao = document.getElementById("vencimento-cartao").value;
-            const parcelasCartao = document.getElementById("parcelas-cartao").value;
+            const numeroCartao = document.getElementById("numero-cartao").value.trim();
+            const codigoCartao = document.getElementById("codigo-cartao").value.trim();
+            const nomeCartao = document.getElementById("nome-cartao").value.trim();
+            const vencimentoCartao = document.getElementById("vencimento-cartao").value.trim();
+            const parcelasCartao = document.getElementById("parcelas-cartao").value.trim();
 
             if (!numeroCartao || !codigoCartao || !nomeCartao || !vencimentoCartao || !parcelasCartao) {
                 alert("Todos os campos do cartão precisam ser preenchidos.");
@@ -132,15 +154,24 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        const enderecoEntrega = document.getElementById("delivery-address").textContent;
+        const radiosEndereco = document.getElementsByName("enderecoSelecionado");
+        let enderecoSelecionado = null;
+        for (const radio of radiosEndereco) {
+            if (radio.checked) {
+                enderecoSelecionado = enderecos[parseInt(radio.value)];
+                break;
+            }
+        }
 
-        if (!enderecoEntrega) {
+        if (!enderecoSelecionado) {
             alert("Por favor, selecione ou preencha um endereço de entrega.");
             return;
         }
 
+        const enderecoEntrega = `${enderecoSelecionado.rua}, ${enderecoSelecionado.cidade} - ${enderecoSelecionado.estado} (${enderecoSelecionado.cep})`;
+
         const pedido = {
-            usuarioId: 1, 
+            usuarioId: usuario.id,  // usa id do usuário vindo do backend
             enderecoEntrega,
             formaPagamento: selectedPayment,
             itens: cartItems.map(item => ({
@@ -161,7 +192,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 const savedOrder = await response.json();
 
-                localStorage.setItem("resumoPedido", JSON.stringify({
+                // Guarda resumo do pedido para a próxima página (pode usar sessionStorage aqui)
+                sessionStorage.setItem("resumoPedido", JSON.stringify({
                     numeroPedido: savedOrder.numeroPedido,
                     totalGeral: savedOrder.totalGeral,
                     enderecoEntrega: savedOrder.enderecoEntrega,
