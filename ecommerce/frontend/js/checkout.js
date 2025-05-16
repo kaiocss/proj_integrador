@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       const carrinho = await response.json();
-      // Retorna array de itens no formato esperado
       return carrinho;
     } catch (error) {
       console.error("Erro na requisição do carrinho:", error);
@@ -61,7 +60,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.target.value = telefone;
   });
 
-  // Renderizar endereços
   function renderizarEnderecos() {
     const listaEnderecosContainer = document.getElementById("lista-enderecos");
     enderecos = JSON.parse(localStorage.getItem("enderecos") || "[]");
@@ -96,7 +94,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   let enderecos = JSON.parse(localStorage.getItem("enderecos") || "[]");
   renderizarEnderecos();
 
-  // Puxa itens do carrinho do backend
   const cartItemsElement = document.getElementById("cart-items");
   const totalPriceElement = document.getElementById("total-price");
   const cartItems = await buscarCarrinhoBackend();
@@ -108,7 +105,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     cartItemsElement.innerHTML = "";
     let total = 0;
     cartItems.forEach((item) => {
-      // Aqui item.produto é o objeto Produto do backend
       const li = document.createElement("li");
       li.textContent = `${item.produto.nome} - Quantidade: ${item.quantidade}`;
       cartItemsElement.appendChild(li);
@@ -119,7 +115,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     totalPriceElement.textContent = `R$ ${total.toFixed(2).replace(".", ",")}`;
   }
 
-  // Controle pagamento
   const pagamentoSelect = document.getElementById("pagamento");
   const cartaoInfo = document.getElementById("cartao-info");
   const boletoInfo = document.getElementById("boleto-info");
@@ -130,21 +125,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     boletoInfo.style.display = selectedPayment === "boleto" ? "block" : "none";
   });
 
-  // Mostrar / esconder formulário novo endereço
   const btnAdicionarEndereco = document.getElementById("btn-adicionar-endereco");
   const novoEnderecoContainer = document.getElementById("novo-endereco");
 
   btnAdicionarEndereco.addEventListener("click", () => {
-    if (novoEnderecoContainer.style.display === "none" || novoEnderecoContainer.style.display === "") {
-      novoEnderecoContainer.style.display = "block";
-    } else {
-      novoEnderecoContainer.style.display = "none";
-    }
+    novoEnderecoContainer.style.display =
+      novoEnderecoContainer.style.display === "none" || !novoEnderecoContainer.style.display
+        ? "block"
+        : "none";
   });
 
-  // Botão salvar novo endereço
-  const salvarEnderecoBtn = document.getElementById("salvar-endereco");
-  salvarEnderecoBtn.addEventListener("click", () => {
+  document.getElementById("salvar-endereco").addEventListener("click", () => {
     const logradouro = document.getElementById("novo-endereco-rua").value.trim();
     const numero = document.getElementById("novo-endereco-numero").value.trim();
     const complemento = document.getElementById("novo-endereco-complemento").value.trim();
@@ -174,9 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderizarEnderecos();
   });
 
-  // Finalizar pedido
-  const finalizarPedidoButton = document.getElementById("finalizar-pedido");
-  finalizarPedidoButton.addEventListener("click", async (e) => {
+  document.getElementById("resumo-pedido").addEventListener("click", async (e) => {
     e.preventDefault();
 
     const radios = document.getElementsByName("enderecoSelecionado");
@@ -194,22 +183,37 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Mapeia os itens para enviar ao backend
     const itensPedido = cartItems.map((item) => ({
-      produtoId: item.produto.id || item.produto.codigo, // tenta id, senão codigo
+      produto: { id: item.produto.id },
       quantidade: item.quantidade,
       precoUnitario: item.produto.valorProduto,
     }));
 
+    let pagamento = {};
+    if (pagamentoSelect.value === "cartao") {
+      pagamento = {
+        "@type": "pagamentoCartao",
+        numeroCartao: document.getElementById("numero-cartao").value,
+        nomeTitular: document.getElementById("nome-cartao").value,
+        dataValidade: document.getElementById("validade-cartao").value,
+        codigoSeguranca: document.getElementById("codigo-cartao").value,
+      };
+    } else if (pagamentoSelect.value === "boleto") {
+      pagamento = {
+        "@type": "pagamentoBoleto"
+      };
+    }
+
     const pedido = {
-      usuarioId: usuario.id,
       enderecoEntrega: enderecoSelecionado,
       itens: itensPedido,
-      pagamento: pagamentoSelect.value,
+      pagamento: pagamento
     };
 
+    console.log("Pedido a ser enviado:", pedido);
+
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/pedidos", {
+      const response = await fetch("http://127.0.0.1:8080/api/orders/finalize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -218,9 +222,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (response.ok) {
         alert("Pedido finalizado com sucesso!");
-        window.location.href = "pedido-confirmado.html";
+        window.location.href = "resumo-pedido.html";
       } else {
-        alert("Erro ao finalizar pedido.");
+        const erro = await response.text();
+        alert("Erro ao finalizar pedido: " + erro);
       }
     } catch (error) {
       console.error("Erro no pedido:", error);
