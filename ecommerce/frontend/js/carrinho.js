@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const itensCarrinho = await response.json();
             console.log("Itens recebidos:", itensCarrinho);
 
+            // Salvar os itens do carrinho no sessionStorage para uso no checkout
+            sessionStorage.setItem("carrinhoTemporario", JSON.stringify(itensCarrinho));
+
             listaCarrinho.innerHTML = '';
             resumoCarrinho.innerHTML = '';
             opcoesFrete.innerHTML = '';
@@ -186,13 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Usuário logado. Prosseguindo para o checkout...");
         }
     });
-    
-    
-    
-    
-    
-    
-    
 
     atualizarCarrinho();
 });
