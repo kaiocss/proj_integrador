@@ -1,10 +1,6 @@
 package com.example.ecommerce.model;
 
-import com.example.ecommerce.model.Endereco;
-import com.example.ecommerce.model.Status;
-import com.example.ecommerce.model.TipoUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -37,13 +33,12 @@ public class Usuario {
     @JoinColumn(name = "endereco_faturamento_id")
     private Endereco enderecoFaturamento;
 
-
-
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Endereco> enderecosEntrega;
 
-    
+    // Getters e Setters
+
     public Long getId() {
         return id;
     }
