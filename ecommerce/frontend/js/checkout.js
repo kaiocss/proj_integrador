@@ -40,43 +40,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("email").value = usuario.email || "";
     document.getElementById("telefone").value = usuario.telefone || "";
 
-    const orderItemsContainer = document.getElementById("order-items");
-    const totalValueElement = document.getElementById("total-price");
-    const pagamentoSelect = document.getElementById("pagamento");
-    const cartaoInfo = document.getElementById("cartao-info");
-    const boletoInfo = document.getElementById("boleto-info");
-    const finalizarPedidoButton = document.getElementById("finalizar-pedido");
-
-    let totalPrice = 0;
-
-    // Carregar itens do carrinho da sessão
-    const cartItems = JSON.parse(sessionStorage.getItem("carrinhoTemporario") || "[]");
-
-    cartItems.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.produto.nome} - R$ ${item.produto.valorProduto.toFixed(2)} x ${item.quantidade}`;
-        orderItemsContainer.appendChild(li);
-        totalPrice += item.produto.valorProduto * item.quantidade;
+    document.getElementById("telefone").addEventListener("input", function (e) {
+        let telefone = e.target.value.replace(/\D/g, ""); // Remove caracteres não numéricos
+        telefone = telefone.replace(/^(\d{2})(\d)/g, "($1) $2"); // Adiciona parênteses em volta do DDD
+        telefone = telefone.replace(/(\d{5})(\d)/, "$1-$2"); // Adiciona o hífen no número
+        e.target.value = telefone;
     });
 
-    totalValueElement.textContent = `R$ ${totalPrice.toFixed(2)}`;
-
-    // Controlar exibição das informações de pagamento
-    pagamentoSelect.addEventListener("change", (e) => {
-        const selectedPayment = e.target.value;
-        cartaoInfo.style.display = selectedPayment === "cartao" ? "block" : "none";
-        boletoInfo.style.display = selectedPayment === "boleto" ? "block" : "none";
-    });
-
-    // Endereços
-    const listaEnderecosContainer = document.getElementById("lista-enderecos");
-    const btnAdicionarEndereco = document.getElementById("btn-adicionar-endereco");
-    const formNovoEndereco = document.getElementById("novo-endereco");
-    const salvarEnderecoBtn = document.getElementById("salvar-endereco");
-    let enderecos = JSON.parse(localStorage.getItem("enderecos") || "[]");
-
+    // Função para renderizar os endereços salvos
     function renderizarEnderecos() {
-        listaEnderecosContainer.innerHTML = "";
+        const listaEnderecosContainer = document.getElementById("lista-enderecos");
+        const enderecos = JSON.parse(localStorage.getItem("enderecos") || "[]");
+
+        listaEnderecosContainer.innerHTML = ""; // Limpa a lista antes de renderizar
 
         if (enderecos.length === 0) {
             listaEnderecosContainer.innerHTML = "<p>Nenhum endereço salvo.</p>";
@@ -87,25 +63,84 @@ document.addEventListener("DOMContentLoaded", async () => {
             const div = document.createElement("div");
             div.classList.add("endereco-item");
 
+            const label = document.createElement("label");
+            label.htmlFor = `endereco-${index}`;
+            label.textContent = `${endereco.logradouro}, ${endereco.numero} - ${endereco.bairro}, ${endereco.cidade} - ${endereco.uf} (${endereco.cep})`;
+
             const radio = document.createElement("input");
             radio.type = "radio";
             radio.name = "enderecoSelecionado";
             radio.value = index;
             radio.id = `endereco-${index}`;
 
-            const label = document.createElement("label");
-            label.htmlFor = `endereco-${index}`;
-            label.textContent = `${endereco.rua}, ${endereco.cidade} - ${endereco.estado} (${endereco.cep})`;
-
-            div.appendChild(radio);
+            // Adiciona o texto do endereço antes do botão de seleção
             div.appendChild(label);
+            div.appendChild(radio);
             listaEnderecosContainer.appendChild(div);
         });
     }
 
-    btnAdicionarEndereco.addEventListener("click", () => {
-        formNovoEndereco.style.display = "block";
+    // Renderizar os endereços ao carregar a página
+    renderizarEnderecos();
+
+    const cartItemsElement = document.getElementById("cart-items");
+    const totalPriceElement = document.getElementById("total-price");
+
+    // Recupera os itens do carrinho do sessionStorage
+    const carrinhoTemporario = sessionStorage.getItem("carrinhoTemporario");
+    const cartItems = carrinhoTemporario ? JSON.parse(carrinhoTemporario) : [];
+
+    // Verifica se há itens no carrinho
+    if (cartItems.length === 0) {
+        cartItemsElement.innerHTML = "<li>O carrinho está vazio.</li>";
+        totalPriceElement.textContent = "R$ 0,00";
+        return;
+    }
+
+    // Limpa o conteúdo atual
+    cartItemsElement.innerHTML = "";
+
+    let total = 0;
+
+    // Adiciona os itens ao resumo do carrinho
+    cartItems.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.produto.nome} - Quantidade: ${item.quantidade}`;
+        cartItemsElement.appendChild(li);
+
+        total += item.precoUnitario * item.quantidade;
     });
+
+    // Atualiza o total
+    totalPriceElement.textContent = `R$ ${total.toFixed(2)}`;
+
+    const pagamentoSelect = document.getElementById("pagamento");
+    const cartaoInfo = document.getElementById("cartao-info");
+    const boletoInfo = document.getElementById("boleto-info");
+    const finalizarPedidoButton = document.getElementById("finalizar-pedido");
+
+    // Controlar exibição das informações de pagamento
+    pagamentoSelect.addEventListener("change", (e) => {
+        const selectedPayment = e.target.value;
+        cartaoInfo.style.display = selectedPayment === "cartao" ? "block" : "none";
+        boletoInfo.style.display = selectedPayment === "boleto" ? "block" : "none";
+    });
+
+    const btnAdicionarEndereco = document.getElementById("btn-adicionar-endereco");
+    const novoEnderecoContainer = document.getElementById("novo-endereco");
+
+    // Adicionar evento de clique no botão "Adicionar Novo Endereço"
+    btnAdicionarEndereco.addEventListener("click", () => {
+        // Alterna a exibição do formulário
+        if (novoEnderecoContainer.style.display === "none" || novoEnderecoContainer.style.display === "") {
+            novoEnderecoContainer.style.display = "block"; // Exibe o formulário
+        } else {
+            novoEnderecoContainer.style.display = "none"; // Oculta o formulário
+        }
+    });
+
+    const salvarEnderecoBtn = document.getElementById("salvar-endereco");
+    let enderecos = JSON.parse(localStorage.getItem("enderecos") || "[]");
 
     salvarEnderecoBtn.addEventListener("click", () => {
         const rua = document.getElementById("novo-endereco-rua").value.trim();
@@ -128,88 +163,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("novo-endereco-cidade").value = "";
         document.getElementById("novo-endereco-estado").value = "";
 
-        formNovoEndereco.style.display = "none";
+        novoEnderecoContainer.style.display = "none";
         renderizarEnderecos();
     });
 
     finalizarPedidoButton.addEventListener("click", async (e) => {
         e.preventDefault();
 
-        const selectedPayment = pagamentoSelect.value;
-        if (!selectedPayment) {
-            alert("Você precisa escolher uma forma de pagamento.");
-            return;
-        }
+        const enderecoSelecionado = {
+            rua: document.getElementById("novo-endereco-rua").value.trim(),
+            cidade: document.getElementById("novo-endereco-cidade").value.trim(),
+            estado: document.getElementById("novo-endereco-estado").value.trim(),
+            cep: document.getElementById("novo-endereco-cep").value.trim()
+        };
 
-        if (selectedPayment === "cartao") {
-            const numeroCartao = document.getElementById("numero-cartao").value.trim();
-            const codigoCartao = document.getElementById("codigo-cartao").value.trim();
-            const nomeCartao = document.getElementById("nome-cartao").value.trim();
-            const vencimentoCartao = document.getElementById("vencimento-cartao").value.trim();
-            const parcelasCartao = document.getElementById("parcelas-cartao").value.trim();
-
-            if (!numeroCartao || !codigoCartao || !nomeCartao || !vencimentoCartao || !parcelasCartao) {
-                alert("Todos os campos do cartão precisam ser preenchidos.");
-                return;
-            }
-        }
-
-        const radiosEndereco = document.getElementsByName("enderecoSelecionado");
-        let enderecoSelecionado = null;
-        for (const radio of radiosEndereco) {
-            if (radio.checked) {
-                enderecoSelecionado = enderecos[parseInt(radio.value)];
-                break;
-            }
-        }
-
-        if (!enderecoSelecionado) {
-            alert("Por favor, selecione ou preencha um endereço de entrega.");
+        // Validação dos campos de endereço
+        if (!enderecoSelecionado.rua || !enderecoSelecionado.cidade || !enderecoSelecionado.estado || !enderecoSelecionado.cep) {
+            alert("Por favor, preencha todos os campos do endereço.");
             return;
         }
 
         const enderecoEntrega = `${enderecoSelecionado.rua}, ${enderecoSelecionado.cidade} - ${enderecoSelecionado.estado} (${enderecoSelecionado.cep})`;
+        console.log("Endereço formatado:", enderecoEntrega);
 
-        const pedido = {
-            usuarioId: usuario.id,  // usa id do usuário vindo do backend
-            enderecoEntrega,
-            formaPagamento: selectedPayment,
-            itens: cartItems.map(item => ({
-                produtoId: item.produto.id,
-                quantidade: item.quantidade,
-                precoUnitario: item.produto.valorProduto
-            })),
-            totalGeral: totalPrice
-        };
-
-        try {
-            const response = await fetch("http://localhost:8080/api/orders/finalize", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(pedido)
-            });
-
-            if (response.ok) {
-                const savedOrder = await response.json();
-
-                // Guarda resumo do pedido para a próxima página (pode usar sessionStorage aqui)
-                sessionStorage.setItem("resumoPedido", JSON.stringify({
-                    numeroPedido: savedOrder.numeroPedido,
-                    totalGeral: savedOrder.totalGeral,
-                    enderecoEntrega: savedOrder.enderecoEntrega,
-                    formaPagamento: savedOrder.formaPagamento,
-                    itens: savedOrder.itens
-                }));
-
-                window.location.href = "/ecommerce/frontend/resumo-pedido.html";
-            } else {
-                alert("Erro ao finalizar o pedido. Por favor, tente novamente.");
-            }
-        } catch (error) {
-            console.error("Erro ao finalizar o pedido:", error);
-            alert("Houve um erro ao processar o pedido.");
-        }
+        // Continue com a lógica de salvar o pedido...
     });
-
-    renderizarEnderecos();
 });
