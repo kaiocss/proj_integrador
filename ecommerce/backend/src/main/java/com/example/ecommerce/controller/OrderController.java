@@ -2,7 +2,11 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.model.OrderSummaryDTO;
 import com.example.ecommerce.model.Pedido;
+import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.services.OrderService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +24,27 @@ public class OrderController {
     }
 
     @PostMapping("/finalize")
-    public ResponseEntity<?> finalizeOrder(@RequestBody Pedido pedido) {
+    public ResponseEntity<?> finalizeOrder(@RequestBody Pedido pedido, HttpSession session) {
         try {
+            // Recupera usuário da sessão
+            Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+            if (usuarioLogado == null) {
+                return ResponseEntity.status(401).body("Usuário não autenticado.");
+            }
+
+            // Setar o usuário no pedido
+            pedido.setUsuario(usuarioLogado);
+
+            System.out.println("Dados recebidos para finalização: " + pedido);
+
             Pedido savedOrder = orderService.finalizeOrder(pedido);
-            return ResponseEntity.ok(savedOrder); // Retorna o pedido salvo, incluindo o ID
+            return ResponseEntity.ok(savedOrder);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro de validação: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
+            System.out.println("Erro ao processar pedido: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Erro ao criar o pedido: " + e.getMessage());
         }
     }
