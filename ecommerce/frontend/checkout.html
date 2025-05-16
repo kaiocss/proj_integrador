@@ -36,21 +36,10 @@
     </header>
     <div class="checkout-container">
         <section class="customer-info">
-          <h2>Informações do Cliente</h2>
-          <form id="form-checkout">
-            <div class="input-group">
-              <label for="nome">Nome Completo</label>
-              <input type="text" id="nome" name="nome" required>
-            </div>
-            <div class="input-group">
-              <label for="email">E-mail</label>
-              <input type="email" id="email" name="email" required>
-            </div>
-            <div class="input-group">
-              <label for="telefone">Telefone</label>
-              <input type="tel" id="telefone" name="telefone" required>
-            </div>
-          </form>
+            <h2>Informações do Cliente</h2>
+            <input type="text" id="nome" placeholder="Nome Completo" readonly>
+            <input type="email" id="email" placeholder="E-mail" readonly>
+            <input type="text" id="telefone" placeholder="(XX) XXXXX-XXXX" maxlength="15">
         </section>
     
         <!-- Endereço de Entrega -->
@@ -60,27 +49,22 @@
           <div id="lista-enderecos">
             
           </div>
+          <button id="btn-adicionar-endereco">Adicionar Novo Endereço</button>
     
-          <button type="button" id="btn-adicionar-endereco">Adicionar Novo Endereço</button>
-    
-          <div id="novo-endereco" style="display: none; margin-top: 15px;">
-            <div class="input-group">
-              <label for="novo-endereco-rua">Endereço</label>
-              <input type="text" id="novo-endereco-rua">
-            </div>
-            <div class="input-group">
-              <label for="novo-endereco-cep">CEP</label>
-              <input type="text" id="novo-endereco-cep">
-            </div>
-            <div class="input-group">
-              <label for="novo-endereco-cidade">Cidade</label>
-              <input type="text" id="novo-endereco-cidade">
-            </div>
-            <div class="input-group">
-              <label for="novo-endereco-estado">Estado</label>
-              <input type="text" id="novo-endereco-estado">
-            </div>
-            <button type="button" id="salvar-endereco">Salvar Endereço</button>
+          <div id="novo-endereco" style="display: none;">
+              <label for="novo-endereco-rua">Rua:</label>
+              <input type="text" id="novo-endereco-rua" placeholder="Digite a rua">
+              
+              <label for="novo-endereco-cep">CEP:</label>
+              <input type="text" id="novo-endereco-cep" placeholder="Digite o CEP">
+              
+              <label for="novo-endereco-cidade">Cidade:</label>
+              <input type="text" id="novo-endereco-cidade" placeholder="Digite a cidade">
+              
+              <label for="novo-endereco-estado">Estado:</label>
+              <input type="text" id="novo-endereco-estado" placeholder="Digite o estado">
+              
+              <button id="salvar-endereco">Salvar Endereço</button>
           </div>
         </section>
     
@@ -130,25 +114,57 @@
             <p>Escolha a opção "Boleto" para gerar o boleto de pagamento.</p>
           </div>
     
-            <button type="submit" id="resumo-pedido">Resumo do Pedido</button>
+            <button type="submit" id="finalizar-pedido">Resumo do Pedido</button>
             <button id="voltar-pagamento" onclick="window.location.href='/ecommerce/frontend/carrinho.html'">Voltar</button>
         </section>
     </div>
 
     <script src="/ecommerce/frontend/js/checkout.js"></script>
     <script>
-        document.getElementById("resumo-pedido").addEventListener("click", async (e) => {
+        document.getElementById("finalizar-pedido").addEventListener("click", async (e) => {
             e.preventDefault();
 
+            // Captura os valores dos campos
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const telefone = document.getElementById("telefone").value;
+            const formaPagamento = document.getElementById("pagamento").value;
+
+            const enderecoSelecionado = {
+                rua: document.getElementById("novo-endereco-rua").value.trim(),
+                cidade: document.getElementById("novo-endereco-cidade").value.trim(),
+                estado: document.getElementById("novo-endereco-estado").value.trim(),
+                cep: document.getElementById("novo-endereco-cep").value.trim()
+            };
+
+            // Validação básica dos campos obrigatórios
+            if (!nome || !email || !telefone || !formaPagamento) {
+                alert("Por favor, preencha todos os campos obrigatórios.");
+                return;
+            }
+
+            const itensCarrinho = JSON.parse(sessionStorage.getItem("carrinhoTemporario"));
+            if (!itensCarrinho || itensCarrinho.length === 0) {
+                alert("O carrinho está vazio. Adicione itens antes de finalizar o pedido.");
+                return;
+            }
+
+            // Estrutura do pedido
             const pedido = {
-                usuarioId: 1, 
-                enderecoEntrega: document.getElementById("endereco").value,
-                formaPagamento: document.getElementById("pagamento").value,
-                itens: [
-                    { produtoId: 1, quantidade: 2, precoUnitario: 50.0 },
-                    { produtoId: 2, quantidade: 1, precoUnitario: 30.0 }
-                ],
-                totalGeral: 130.0
+                usuarioId: 1, // Substitua pelo ID do usuário autenticado
+                enderecoEntrega: {
+                    rua: enderecoSelecionado.rua,
+                    cidade: enderecoSelecionado.cidade,
+                    estado: enderecoSelecionado.estado,
+                    cep: enderecoSelecionado.cep
+                },
+                formaPagamento: formaPagamento,
+                itens: itensCarrinho.map(item => ({
+                    produtoId: item.produto.id,
+                    quantidade: item.quantidade,
+                    precoUnitario: item.produto.valorProduto
+                })),
+                totalGeral: 130.0 // Atualize para calcular o total real
             };
 
             try {
@@ -158,11 +174,27 @@
                     body: JSON.stringify(pedido)
                 });
 
-                const savedOrder = await response.json(); 
-                const orderId = savedOrder.id; 
+                if (!response.ok) {
+                    try {
+                        const errorResponse = await response.json();
+                        console.error("Erro na resposta do servidor (JSON):", errorResponse);
+                        alert("Erro ao salvar o pedido: " + errorResponse.message || "Verifique os dados e tente novamente.");
+                    } catch (e) {
+                        const errorText = await response.text();
+                        console.error("Erro na resposta do servidor (Texto):", errorText);
+                        alert("Erro ao salvar o pedido: " + errorText);
+                    }
+                    return;
+                }
+
+                const savedOrder = await response.json();
+                const orderId = savedOrder.id;
+
+                // Redireciona para a página de resumo do pedido
                 window.location.href = `/ecommerce/frontend/resumo-pedido.html?orderId=${orderId}`;
             } catch (error) {
-                alert("Erro!. Verifique as informações e tente novamente.");
+                console.error("Erro ao salvar o pedido:", error);
+                alert("Erro ao salvar o pedido: " + error.message);
             }
         });
     </script>
