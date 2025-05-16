@@ -1,64 +1,44 @@
-document.addEventListener("DOMContentLoaded", async () => {
-    const orderId = new URLSearchParams(window.location.search).get("orderId"); // Obter o ID do pedido da URL
-    const numeroPedidoElement = document.getElementById("numero-pedido");
-    const dataPedidoElement = document.getElementById("data-pedido");
-    const statusPedidoElement = document.getElementById("status-pedido");
-    const orderItemsContainer = document.getElementById("order-items");
-    const totalValueElement = document.getElementById("total-value");
-    const shippingCostElement = document.getElementById("shipping-cost");
-    const grandTotalElement = document.getElementById("grand-total");
-    const deliveryAddressElement = document.getElementById("delivery-address");
-    const paymentMethodElement = document.getElementById("payment-method");
+document.addEventListener("DOMContentLoaded", () => {
+    // Recupera os dados do pedido do sessionStorage
+    const resumoPedido = JSON.parse(sessionStorage.getItem("resumoPedido"));
 
-    try {
-        const response = await fetch(`http://localhost:8080/api/orders/summary?orderId=${orderId}`);
-        const orderSummary = await response.json();
-
-        numeroPedidoElement.textContent = orderSummary.numeroPedido;
-        dataPedidoElement.textContent = orderSummary.dataPedido;
-        statusPedidoElement.textContent = orderSummary.status;
-
-        orderSummary.produtos.forEach(produto => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${produto.nome}</td>
-                <td>${produto.quantidade}</td>
-                <td>R$ ${produto.precoUnitario.toFixed(2)}</td>
-                <td>R$ ${produto.total.toFixed(2)}</td>
-            `;
-            orderItemsContainer.appendChild(row);
-        });
-
-        totalValueElement.textContent = `R$ ${orderSummary.totalGeral.toFixed(2)}`;
-        shippingCostElement.textContent = `R$ ${orderSummary.frete.toFixed(2)}`;
-        grandTotalElement.textContent = `R$ ${(orderSummary.totalGeral + orderSummary.frete).toFixed(2)}`;
-
-        deliveryAddressElement.textContent = orderSummary.enderecoEntrega;
-        paymentMethodElement.textContent = orderSummary.formaPagamento;
-    } catch (error) {
-        console.error("Erro ao buscar resumo do pedido:", error);
-        alert("Erro ao carregar o resumo do pedido. Tente novamente.");
+    if (!resumoPedido) {
+        alert("Nenhum pedido encontrado. Redirecionando para a escolha de pagamento.");
+        window.location.href = "/ecommerce/frontend/checkout.html";
+        return;
     }
 
-    const finalizarPedidoButton = document.getElementById("finalizar-pedido");
+    // Preenche os detalhes do pedido
+    document.getElementById("numero-pedido").textContent = resumoPedido.numeroPedido || "---";
+    document.getElementById("data-pedido").textContent = resumoPedido.dataPedido || new Date().toLocaleDateString();
+    document.getElementById("status-pedido").textContent = resumoPedido.status || "Pendente";
 
-    finalizarPedidoButton.addEventListener("click", async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/api/orders/finalize?orderId=${orderId}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" }
-            });
+    // Preenche os itens do pedido
+    const orderItems = document.getElementById("order-items");
+    orderItems.innerHTML = resumoPedido.itens.map(item => `
+        <tr>
+            <td>${item.produtoNome}</td>
+            <td>${item.quantidade}</td>
+            <td>R$ ${item.precoUnitario.toFixed(2)}</td>
+            <td>R$ ${(item.quantidade * item.precoUnitario).toFixed(2)}</td>
+        </tr>
+    `).join("");
 
-            if (response.ok) {
-                const result = await response.json();
-                alert(`Pedido concluído com sucesso!\nNúmero do Pedido: ${result.numeroPedido}\nValor Total: R$ ${result.totalGeral.toFixed(2)}`);
-                window.location.href = "/ecommerce/frontend/index.html"; 
-            } else {
-                throw new Error("Erro ao gravar o pedido.");
-            }
-        } catch (error) {
-            console.error("Erro ao finalizar o pedido:", error);
-            alert("Erro ao finalizar o pedido. Por favor, tente novamente.");
-        }
+    // Preenche os valores financeiros
+    document.getElementById("total-value").textContent = `R$ ${resumoPedido.totalGeral.toFixed(2)}`;
+    document.getElementById("shipping-cost").textContent = `R$ ${resumoPedido.frete || 0.00}`;
+    document.getElementById("grand-total").textContent = `R$ ${(resumoPedido.totalGeral + (resumoPedido.frete || 0)).toFixed(2)}`;
+
+    // Preenche o endereço de entrega
+    document.getElementById("delivery-address").textContent = resumoPedido.enderecoEntrega;
+
+    // Preenche a forma de pagamento
+    document.getElementById("payment-method").textContent = resumoPedido.formaPagamento;
+
+    // Botão de finalizar pedido
+    document.getElementById("finalizar-pedido").addEventListener("click", () => {
+        alert("Compra concluída com sucesso!");
+        sessionStorage.removeItem("resumoPedido");
+        window.location.href = "/ecommerce/frontend/index.html";
     });
 });
