@@ -23,7 +23,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EnderecoRepository enderecoRepository;
     private final CarrinhoService carrinhoService;
-    
+
     public UsuarioService(UsuarioRepository usuarioRepository, EnderecoRepository enderecoRepository, CarrinhoService carrinhoService) {
         this.usuarioRepository = usuarioRepository;
         this.enderecoRepository = enderecoRepository;
@@ -45,16 +45,16 @@ public class UsuarioService {
 
         if (usuario.getEnderecoFaturamento() != null) {
             Endereco enderecoFaturamento = usuario.getEnderecoFaturamento();
-            enderecoFaturamento.setUsuario(usuario); 
+            enderecoFaturamento.setUsuario(usuario);
         }
-    
+
         return usuarioRepository.save(usuario);
     }
 
     public Usuario atualizarDados(Long id, String nome, String genero, String dataNascimento) throws Exception {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new Exception("Usuário não encontrado."));
-    
+
         usuario.setNome(nome);
         usuario.setGenero(genero);
 
@@ -66,10 +66,10 @@ public class UsuarioService {
         } catch (ParseException e) {
             throw new Exception("Erro ao converter data: " + e.getMessage());
         }
-        
+
         return usuarioRepository.save(usuario);
     }
-    
+
 
     public void alterarSenha(Long id, String senhaAtual, String novaSenha) throws Exception {
         Usuario usuario = usuarioRepository.findById(id)
@@ -86,8 +86,8 @@ public class UsuarioService {
     public void adicionarEndereco(Long usuarioId, Endereco endereco) throws Exception {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new Exception("Usuário não encontrado."));
-        endereco.setUsuario(usuario); 
-        enderecoRepository.save(endereco); 
+        endereco.setUsuario(usuario);
+        enderecoRepository.save(endereco);
     }
 
     private String criptografarSenha(String senha) throws NoSuchAlgorithmException {
@@ -109,35 +109,35 @@ public class UsuarioService {
 
         Usuario usuario = usuarioRepository.findUsuarioByEmail(email)
             .orElseThrow(() -> new Exception("Erro ao buscar usuário no banco de dados."));
-    
+
         if (!criptografarSenha(senha).equals(usuario.getSenha())) {
             throw new Exception("Senha inválida.");
         }
-    
+
         carrinhoService.associarCarrinhoAoUsuario(session, usuario.getId());
         return usuario;
     }
 }
 
-    
 
 
 
-    
 
 
 
-    
 
 
 
-    
 
 
 
-    
 
 
 
-    
+
+
+
+
+
+
 
