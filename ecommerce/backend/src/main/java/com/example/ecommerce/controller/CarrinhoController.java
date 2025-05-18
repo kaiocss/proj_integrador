@@ -70,7 +70,7 @@ public class CarrinhoController {
                 existente.get().setQuantidade(existente.get().getQuantidade() + 1);
             } else {
                 Carrinho item = new Carrinho(produto, 1);
-                item.setId((int) (System.currentTimeMillis() % Integer.MAX_VALUE)); // ID temporário único
+                item.setId((int) (System.currentTimeMillis() % Integer.MAX_VALUE)); 
                 carrinhoTemp.add(item);
             }
 

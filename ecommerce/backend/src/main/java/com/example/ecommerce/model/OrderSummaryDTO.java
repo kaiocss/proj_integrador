@@ -9,7 +9,6 @@ public class OrderSummaryDTO {
     private double frete;
     private double totalGeral;
 
-    // Getters e Setters
     public List<ProdutoDTO> getProdutos() {
         return produtos;
     }
@@ -50,7 +49,6 @@ public class OrderSummaryDTO {
         this.totalGeral = totalGeral;
     }
 
-    // Classe interna ProdutoDTO
     public static class ProdutoDTO {
         private String nome;
         private double precoUnitario;

@@ -1,5 +1,6 @@
 package com.example.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -25,8 +26,8 @@ import jakarta.persistence.ManyToOne;
     property = "@type"
 )
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = PagamentoCartao.class, name = "CARTAO"),
-    @JsonSubTypes.Type(value = PagamentoBoleto.class, name = "BOLETO")
+    @JsonSubTypes.Type(value = PagamentoCartao.class, name = "cartao"),
+    @JsonSubTypes.Type(value = PagamentoBoleto.class, name = "boleto")
 })
 public abstract class Pagamento {
 
@@ -39,6 +40,7 @@ public abstract class Pagamento {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id")
+    @JsonBackReference
     private Pedido pedido;
 
     public Long getId() {

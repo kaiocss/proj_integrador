@@ -113,9 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         novaQtd++;
                     } else if (op === 'sub' && novaQtd > 1) {
                         novaQtd--;
-                    } else if (op === 'sub' && novaQtd === 1) {
+                    } else if (op === 'sub' && novaQtd <= 0) {
                         console.log(`Removendo item ID: ${id}`);
-                        const response = await fetch(`http://127.0.0.1:8080/api/carrinho/${id}`, { method: 'DELETE' });
+                        const response = await fetch(`http://127.0.0.1:8080/api/carrinho/${id}`, { method: 'DELETE', credentials: 'include' });
             
                         if (!response.ok) {
                             console.error("Erro ao remover item.");
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('http://127.0.0.1:8080/api/carrinho/limpar', {
                 method: 'DELETE',
-                credentials: 'same-origin' 
+                credentials: 'include' 
             });
     
             if (!response.ok) throw new Error("Erro ao limpar o carrinho.");
@@ -180,17 +180,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     finalizarCompra.addEventListener('click', () => {
         const usuarioLogado = localStorage.getItem("usuarioLogado");
-    
-        
+        const freteSelecionado = document.querySelector('input[name="frete"]:checked');
+
+        if (!freteSelecionado) {
+        alert("Por favor, selecione uma opção de frete antes de finalizar a compra.");
+        return; 
+    }
         window.location.href = '/ecommerce/frontend/checkout.html';
-    
         
-        if (!usuarioLogado) {
-            console.log("Usuário não logado. Redirecionando para o login...");
-            
-        } else {
-            console.log("Usuário logado. Prosseguindo para o checkout...");
-        }
     });
 
     atualizarCarrinho();

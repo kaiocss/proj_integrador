@@ -1,4 +1,22 @@
 document.addEventListener("DOMContentLoaded", async () => {
+
+  async function buscarEnderecoPorCEP(cep) {
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            if (!response.ok) {
+                throw new Error("Erro ao buscar o CEP.");
+            }
+            const data = await response.json();
+            if (data.erro) {
+                throw new Error("CEP não encontrado.");
+            }
+            return data;
+        } catch (error) {
+            console.error("Erro ao buscar endereço:", error);
+            alert(error.message);
+            return null;
+        }
+    }
   async function verificarSessao() {
     try {
       const response = await fetch("http://127.0.0.1:8080/api/usuarios/sessao", {
@@ -137,35 +155,56 @@ document.addEventListener("DOMContentLoaded", async () => {
         : "none";
   });
 
-  document.getElementById("salvar-endereco").addEventListener("click", () => {
-    const logradouro = document.getElementById("novo-endereco-rua").value.trim();
-    const numero = document.getElementById("novo-endereco-numero").value.trim();
-    const complemento = document.getElementById("novo-endereco-complemento").value.trim();
-    const bairro = document.getElementById("novo-endereco-bairro").value.trim();
-    const cep = document.getElementById("novo-endereco-cep").value.trim();
-    const cidade = document.getElementById("novo-endereco-cidade").value.trim();
-    const uf = document.getElementById("novo-endereco-estado").value.trim();
+  document.getElementById("salvar-endereco").addEventListener("click", async () => {
+  const cep = document.getElementById("novo-endereco-cep").value.trim();
 
-    if (!logradouro || !cep || !cidade || !uf) {
-      alert("Por favor, preencha todos os campos obrigatórios: rua, cep, cidade e estado.");
-      return;
-    }
+  if (!cep) {
+    alert("Por favor, informe o CEP.");
+    return;
+  }
 
-    const novoEndereco = { logradouro, numero, complemento, bairro, cep, cidade, uf };
-    enderecos.push(novoEndereco);
-    localStorage.setItem("enderecos", JSON.stringify(enderecos));
+  const enderecoAPI = await buscarEnderecoPorCEP(cep);
+  if (!enderecoAPI) {
+    return; 
+  }
 
-    document.getElementById("novo-endereco-rua").value = "";
-    document.getElementById("novo-endereco-numero").value = "";
-    document.getElementById("novo-endereco-complemento").value = "";
-    document.getElementById("novo-endereco-bairro").value = "";
-    document.getElementById("novo-endereco-cep").value = "";
-    document.getElementById("novo-endereco-cidade").value = "";
-    document.getElementById("novo-endereco-estado").value = "";
+  const logradouroInput = document.getElementById("novo-endereco-rua");
+  const bairroInput = document.getElementById("novo-endereco-bairro");
+  const cidadeInput = document.getElementById("novo-endereco-cidade");
+  const estadoInput = document.getElementById("novo-endereco-estado");
 
-    novoEnderecoContainer.style.display = "none";
-    renderizarEnderecos();
-  });
+  if (!logradouroInput.value.trim()) logradouroInput.value = enderecoAPI.logradouro;
+  if (!bairroInput.value.trim()) bairroInput.value = enderecoAPI.bairro;
+  if (!cidadeInput.value.trim()) cidadeInput.value = enderecoAPI.localidade;
+  if (!estadoInput.value.trim()) estadoInput.value = enderecoAPI.uf;
+
+  const logradouro = logradouroInput.value.trim();
+  const numero = document.getElementById("novo-endereco-numero").value.trim();
+  const complemento = document.getElementById("novo-endereco-complemento").value.trim();
+  const bairro = bairroInput.value.trim();
+  const cidade = cidadeInput.value.trim();
+  const uf = estadoInput.value.trim();
+
+  if (!logradouro || !cep || !cidade || !uf) {
+    alert("Por favor, preencha todos os campos obrigatórios: rua, cep, cidade e estado.");
+    return;
+  }
+
+  const novoEndereco = { logradouro, numero, complemento, bairro, cep, cidade, uf };
+  enderecos.push(novoEndereco);
+  localStorage.setItem("enderecos", JSON.stringify(enderecos));
+
+  logradouroInput.value = "";
+  document.getElementById("novo-endereco-numero").value = "";
+  document.getElementById("novo-endereco-complemento").value = "";
+  bairroInput.value = "";
+  document.getElementById("novo-endereco-cep").value = "";
+  cidadeInput.value = "";
+  estadoInput.value = "";
+
+  novoEnderecoContainer.style.display = "none";
+  renderizarEnderecos();
+});
 
   document.getElementById("resumo-pedido").addEventListener("click", async (e) => {
     e.preventDefault();
@@ -196,7 +235,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let pagamento = {};
     if (pagamentoSelect.value === "cartao") {
     pagamento = {
-    "@type": "CARTAO",
+    "@type": "cartao",
     numeroCartao: document.getElementById("numero-cartao").value,
     nomeImpresso: document.getElementById("nome-cartao").value,
     validade: document.getElementById("vencimento-cartao").value,
@@ -205,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
      } else if (pagamentoSelect.value === "boleto") {
      pagamento = {
-     "@type": "BOLETO"
+     "@type": "boleto"
     };
    }
 

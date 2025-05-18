@@ -27,6 +27,7 @@ public class Pedido {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pagamento_id")
+    @JsonManagedReference
     private Pagamento pagamento;
 
     private String enderecoEntrega;
