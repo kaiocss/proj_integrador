@@ -96,6 +96,4 @@ public class Produto {
     public void setImagens(List<ImagemProduto> imagens) {
         this.imagens = imagens;
     }
-
-
 }

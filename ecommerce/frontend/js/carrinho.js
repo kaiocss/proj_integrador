@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const itensCarrinho = await response.json();
             console.log("Itens recebidos:", itensCarrinho);
 
-            // Salvar os itens do carrinho no sessionStorage para uso no checkout
             sessionStorage.setItem("carrinhoTemporario", JSON.stringify(itensCarrinho));
 
             listaCarrinho.innerHTML = '';
@@ -80,12 +79,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         Frete opção ${index + 1}: R$ ${valor.toFixed(2)}
                     `;
                     opcoesFrete.appendChild(label);
-                    if (index === 0) valorFreteSelecionado = valor;
+                    if (index === 0){
+                        valorFreteSelecionado = valor;
+                        sessionStorage.setItem("freteSelecionado", valor);
+                    } 
                 });
 
                 document.querySelectorAll('input[name="frete"]').forEach(radio => {
                     radio.addEventListener('change', () => {
                         valorFreteSelecionado = parseFloat(radio.value);
+                        sessionStorage.setItem("freteSelecionado", valorFreteSelecionado);
                         exibirResumo(valorTotal);
                     });
                 });

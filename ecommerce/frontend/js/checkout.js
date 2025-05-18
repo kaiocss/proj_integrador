@@ -37,8 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return [];
       }
 
-      const carrinho = await response.json();
-      return carrinho;
+      return await response.json();
     } catch (error) {
       console.error("Erro na requisição do carrinho:", error);
       return [];
@@ -48,7 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const usuario = await verificarSessao();
   if (!usuario) return;
 
-  // Preenche dados do usuário
   document.getElementById("nome").value = usuario.nome || "";
   document.getElementById("email").value = usuario.email || "";
   document.getElementById("telefone").value = usuario.telefone || "";
@@ -94,6 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let enderecos = JSON.parse(localStorage.getItem("enderecos") || "[]");
   renderizarEnderecos();
 
+  const frete = parseFloat(sessionStorage.getItem("freteSelecionado")) || 0;
   const cartItemsElement = document.getElementById("cart-items");
   const totalPriceElement = document.getElementById("total-price");
   const cartItems = await buscarCarrinhoBackend();
@@ -103,16 +102,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     totalPriceElement.textContent = "R$ 0,00";
   } else {
     cartItemsElement.innerHTML = "";
+
     let total = 0;
     cartItems.forEach((item) => {
       const li = document.createElement("li");
       li.textContent = `${item.produto.nome} - Quantidade: ${item.quantidade}`;
       cartItemsElement.appendChild(li);
-
       const precoUnitario = item.produto.valorProduto || 0;
       total += precoUnitario * item.quantidade;
     });
+
+    total += frete;
     totalPriceElement.textContent = `R$ ${total.toFixed(2).replace(".", ",")}`;
+    sessionStorage.setItem("total", total.toFixed(2));
   }
 
   const pagamentoSelect = document.getElementById("pagamento");
@@ -183,31 +185,38 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    const enderecoEntregaString = `${enderecoSelecionado.logradouro}, ${enderecoSelecionado.numero || ""} - ${enderecoSelecionado.bairro || ""}, ${enderecoSelecionado.cidade} - ${enderecoSelecionado.uf}, CEP: ${enderecoSelecionado.cep}`;
+
     const itensPedido = cartItems.map((item) => ({
-      produto: { id: item.produto.id },
+      produto: {codigo: item.produto.codigo},
       quantidade: item.quantidade,
       precoUnitario: item.produto.valorProduto,
     }));
 
     let pagamento = {};
     if (pagamentoSelect.value === "cartao") {
-      pagamento = {
-        "@type": "pagamentoCartao",
-        numeroCartao: document.getElementById("numero-cartao").value,
-        nomeTitular: document.getElementById("nome-cartao").value,
-        dataValidade: document.getElementById("validade-cartao").value,
-        codigoSeguranca: document.getElementById("codigo-cartao").value,
-      };
-    } else if (pagamentoSelect.value === "boleto") {
-      pagamento = {
-        "@type": "pagamentoBoleto"
-      };
-    }
+    pagamento = {
+    "@type": "CARTAO",
+    numeroCartao: document.getElementById("numero-cartao").value,
+    nomeImpresso: document.getElementById("nome-cartao").value,
+    validade: document.getElementById("validade-cartao").value,
+    codigoVerificador: document.getElementById("codigo-cartao").value,
+    parcelas: parseInt(document.getElementById("parcelas").value || "1")
+    };
+     } else if (pagamentoSelect.value === "boleto") {
+     pagamento = {
+     "@type": "BOLETO"
+    };
+   }
 
     const pedido = {
-      enderecoEntrega: enderecoSelecionado,
-      itens: itensPedido,
-      pagamento: pagamento
+      usuario: { id: usuario.id },
+      enderecoEntrega: enderecoEntregaString,
+      pagamento: pagamento,
+      formaPagamento: pagamentoSelect.value,
+      frete: frete,
+      totalGeral: parseFloat(sessionStorage.getItem("total")) || 0,
+      itens: itensPedido
     };
 
     console.log("Pedido a ser enviado:", pedido);
@@ -221,7 +230,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       if (response.ok) {
-        alert("Pedido finalizado com sucesso!");
+        const pedidoSalvo = await response.json();
+        sessionStorage.setItem("resumoPedido", JSON.stringify(pedidoSalvo));
+        alert("Pedido ok! Direcionando ao resumo");
         window.location.href = "resumo-pedido.html";
       } else {
         const erro = await response.text();

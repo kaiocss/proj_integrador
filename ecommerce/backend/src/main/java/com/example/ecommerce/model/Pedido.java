@@ -2,7 +2,10 @@ package com.example.ecommerce.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "pedido")
@@ -19,19 +22,22 @@ public class Pedido {
     private Usuario usuario;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<ItemPedido> itens;
+    @JsonManagedReference
+    private List<ItemPedido> itens = new ArrayList<>();
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pagamento_id")
     private Pagamento pagamento;
 
     private String enderecoEntrega;
+
+    @Column(name = "forma_pagamento", nullable = false)
     private String formaPagamento;
+    
     private double frete;
     private double totalGeral;
     private String status;
     private String numeroPedido;
-
 
     public Long getId() {
         return id;

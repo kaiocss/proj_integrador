@@ -26,13 +26,15 @@ public class OrderController {
     @PostMapping("/finalize")
     public ResponseEntity<?> finalizeOrder(@RequestBody Pedido pedido, HttpSession session) {
         try {
-            // Recupera usuário da sessão
             Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
             if (usuarioLogado == null) {
                 return ResponseEntity.status(401).body("Usuário não autenticado.");
             }
+            
+             if (pedido.getFormaPagamento() == null || pedido.getFormaPagamento().isBlank()) {
+                return ResponseEntity.badRequest().body("A forma de pagamento é obrigatória.");
+            }
 
-            // Setar o usuário no pedido
             pedido.setUsuario(usuarioLogado);
 
             System.out.println("Dados recebidos para finalização: " + pedido);

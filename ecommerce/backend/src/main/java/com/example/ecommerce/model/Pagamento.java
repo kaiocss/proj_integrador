@@ -1,5 +1,8 @@
 package com.example.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,9 +15,19 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_pagamento")
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "@type"
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = PagamentoCartao.class, name = "CARTAO"),
+    @JsonSubTypes.Type(value = PagamentoBoleto.class, name = "BOLETO")
+})
 public abstract class Pagamento {
 
     @Id
