@@ -19,20 +19,17 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log("Usuário logado:", usuario);
             userButton.innerText = "Olá, " + usuario.nome;
 
-            // Toggle dropdown
             userButton.addEventListener('click', (event) => {
-                event.stopPropagation(); // Impede que o clique feche o menu imediatamente
+                event.stopPropagation(); 
                 menuDropdown.style.display = menuDropdown.style.display === "block" ? "none" : "block";
             });
 
-            // Oculta dropdown ao clicar fora
             document.addEventListener('click', (event) => {
                 if (!userMenu.contains(event.target)) {
                     menuDropdown.style.display = "none";
                 }
             });
 
-            // Logout
             logoutBtn.addEventListener('click', async () => {
                 const confirmLogout = confirm("Você está prestes a sair. Deseja continuar?");
                 if (confirmLogout) {
@@ -42,13 +39,16 @@ document.addEventListener('DOMContentLoaded', async function () {
                     });
 
                     alert("Você foi deslogado com sucesso!");
-                    window.location.href = "index.html"; // Redireciona direto sem reescrever DOM
+                    window.location.href = "index.html"; 
                 }
             });
 
         } else {
             console.log("Usuário não logado.");
-            userMenu.innerHTML = `<a href="login.html">Entre ou Cadastre-se</a>`;
+            userMenu.innerHTML = `<a href="login.html" class="userBtn">Entre ou Cadastre-se</a>
+            <a href="/ecommerce/frontend/carrinho.html" class="carrinho">
+            <img src="/ecommerce/frontend/assets/cart.png" alt="Carrinho" class="icone-carrinho" />
+            </a>`;
         }
     } catch (error) {
         console.error("Erro ao verificar sessão:", error);

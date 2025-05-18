@@ -16,8 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
             <td>${item.produto.nome}</td>
             <td>${item.quantidade}</td>
-            <td>R$ ${item.precoUnitario.toFixed(2)}</td>
-            <td>R$ ${(item.quantidade * item.precoUnitario).toFixed(2)}</td>
+            <td>R$ ${item.precoUnitario.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+            <td>R$ ${(item.quantidade * item.precoUnitario).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
         </tr>
     `).join("");
 

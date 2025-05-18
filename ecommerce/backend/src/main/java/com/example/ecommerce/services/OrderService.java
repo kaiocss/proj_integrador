@@ -2,6 +2,7 @@ package com.example.ecommerce.services;
 
 import com.example.ecommerce.model.Pedido;
 import com.example.ecommerce.model.Produto;
+import com.example.ecommerce.model.Usuario;
 import com.example.ecommerce.model.ItemPedido;
 import com.example.ecommerce.model.OrderSummaryDTO;
 import com.example.ecommerce.repository.PedidoRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,5 +83,13 @@ public class OrderService {
 
         return pedidoRepository.save(pedido);
     }
+
+    public List<Pedido> listarPedidosDoUsuario(Usuario usuario) {
+      return pedidoRepository.findByUsuario(usuario);
+   }
+
+    public Pedido buscarPedidoPorId(Long id) {
+     return pedidoRepository.findById(id).orElse(null);
+   }
 }
 

@@ -7,6 +7,8 @@ import com.example.ecommerce.services.OrderService;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,22 @@ public class OrderController {
     public OrderSummaryDTO getOrderSummary(@RequestParam Long orderId) {
         return orderService.getOrderSummary(orderId);
     }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPedidoDetalhado(@PathVariable Long id, HttpSession session) {
+    Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+      if (usuarioLogado == null) {
+        return ResponseEntity.status(401).body("Usuário não autenticado.");
+      }
 
+     Pedido pedido = orderService.buscarPedidoPorId(id);
+      if (pedido == null || !pedido.getUsuario().getId().equals(usuarioLogado.getId())) {
+        return ResponseEntity.status(403).body("Acesso negado ao pedido.");
+     }
+
+    return ResponseEntity.ok(pedido);
+}
+    
     @PostMapping("/finalize")
     public ResponseEntity<?> finalizeOrder(@RequestBody Pedido pedido, HttpSession session) {
         try {
@@ -30,7 +47,7 @@ public class OrderController {
             if (usuarioLogado == null) {
                 return ResponseEntity.status(401).body("Usuário não autenticado.");
             }
-            
+
              if (pedido.getFormaPagamento() == null || pedido.getFormaPagamento().isBlank()) {
                 return ResponseEntity.badRequest().body("A forma de pagamento é obrigatória.");
             }
@@ -50,4 +67,15 @@ public class OrderController {
             return ResponseEntity.status(500).body("Erro ao criar o pedido: " + e.getMessage());
         }
     }
+
+    @GetMapping("/user")
+     public ResponseEntity<?> listarPedidosUsuario(HttpSession session) {
+      Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+       if (usuarioLogado == null) {
+        return ResponseEntity.status(401).body("Usuário não autenticado.");
+    }
+
+    List<Pedido> pedidos = orderService.listarPedidosDoUsuario(usuarioLogado);
+    return ResponseEntity.ok(pedidos);
+}
 }

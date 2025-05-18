@@ -199,9 +199,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     "@type": "CARTAO",
     numeroCartao: document.getElementById("numero-cartao").value,
     nomeImpresso: document.getElementById("nome-cartao").value,
-    validade: document.getElementById("validade-cartao").value,
+    validade: document.getElementById("vencimento-cartao").value,
     codigoVerificador: document.getElementById("codigo-cartao").value,
-    parcelas: parseInt(document.getElementById("parcelas").value || "1")
+    parcelas: parseInt(document.getElementById("parcelas-cartao").value || "1")
     };
      } else if (pagamentoSelect.value === "boleto") {
      pagamento = {

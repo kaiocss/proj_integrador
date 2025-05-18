@@ -13,7 +13,9 @@
 <body>
     <header>
         <div class="logo-menu">
-            <img src="/ecommerce/frontend/assets/logo.png" alt="Logo da Loja" class="logo" />
+             <a href="/ecommerce/frontend/index.html">
+                <img src="/ecommerce/frontend/assets/logo.png" alt="Logo da Loja" class="logo" />
+            </a>
             <img id="menu-toggle" src="/ecommerce/frontend/assets/menu-burger.png" alt="Menu" class="menu-bar" />
         </div>
         <div class="top-bar">
@@ -25,7 +27,7 @@
                 <a href="/ecommerce/frontend/login.html" id="userButton" class="userBtn">Usuário</a>
                 <div id="menuDropdown" class="dropdown">
                     <a href="/ecommerce/frontend/alterar.html">Alterar meus dados</a><br />
-                    <a href="#" id="pedidosBtn">Meus pedidos</a><br />
+                    <a href="/ecommerce/frontend/pedidos.html" id="pedidosBtn">Meus pedidos</a><br />
                     <a href="#" id="logoutBtn">Sair</a><br />
                 </div>
                 <a href="/ecommerce/frontend/carrinho.html" class="carrinho">
@@ -43,12 +45,10 @@
             <input type="text" id="telefone" placeholder="(XX) XXXXX-XXXX" maxlength="15" />
         </section>
 
-        <!-- Endereço de Entrega -->
         <section class="shipping-address">
             <h2>Endereço de Entrega</h2>
 
             <div id="lista-enderecos">
-                <!-- Endereços salvos renderizados aqui via JS -->
             </div>
 
             <button id="btn-adicionar-endereco" type="button">Adicionar Novo Endereço</button>
@@ -93,8 +93,8 @@
                 <label for="pagamento">Escolha uma forma de pagamento</label>
                 <select id="pagamento" name="pagamento" required>
                     <option value="" disabled selected>Selecione...</option>
-                    <option value="boleto">Boleto</option>
-                    <option value="cartao">Cartão de Crédito</option>
+                    <option value="Boleto">Boleto</option>
+                    <option value="Cartão de Crédito">Cartão de Crédito</option>
                 </select>
             </div>
 
@@ -132,5 +132,6 @@
     </div>
 
     <script src="/ecommerce/frontend/js/checkout.js"></script>
+    <script src="/ecommerce/frontend/js/sessaoLogin.js"></script>
 </body>
 </html>
