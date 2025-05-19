@@ -10,6 +10,17 @@ nome VARCHAR(100),
 cpf char(11)
 );
 
+INSERT INTO userBackoffice (email, senha, tipoUser) VALUES
+('adm@exemplo.com', 'senha123', 'adm');
+
+INSERT INTO userBackoffice (email, senha, tipoUser, status) VALUES 
+('teste@teste.com', 'senha123', 'adm', 'ativado');
+
+UPDATE userBackoffice SET senha = 'senha123' WHERE email = 'teste@teste.com';
+SELECT senha FROM userBackoffice WHERE email = 'teste@teste.com';
+UPDATE userBackoffice SET senha = '55a5e9e78207b4df8699d60886fa070079463547b095d1a05bc719bb4e6cd251' WHERE email = 'teste@teste.com';
+
+
 CREATE TABLE IF NOT EXISTS produtos(
 codigo INT auto_increment PRIMARY KEY,
 nome varchar(200) NOT NULL,
