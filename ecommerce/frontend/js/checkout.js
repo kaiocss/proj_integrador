@@ -156,16 +156,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.getElementById("salvar-endereco").addEventListener("click", async () => {
-  const cep = document.getElementById("novo-endereco-cep").value.trim();
+  const cepInput = document.getElementById("novo-endereco-cep");
+  const cep = cepInput.value.trim().replace(/\D/g, "");
 
   if (!cep) {
     alert("Por favor, informe o CEP.");
     return;
   }
 
+  if (cep.length !== 8) {
+    alert("CEP inválido. Deve conter exatamente 8 dígitos numéricos.");
+    return;
+  }
+
   const enderecoAPI = await buscarEnderecoPorCEP(cep);
   if (!enderecoAPI) {
-    return; 
+    alert("CEP não encontrado.");
+    return;
   }
 
   const logradouroInput = document.getElementById("novo-endereco-rua");
@@ -173,10 +180,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cidadeInput = document.getElementById("novo-endereco-cidade");
   const estadoInput = document.getElementById("novo-endereco-estado");
 
-  if (!logradouroInput.value.trim()) logradouroInput.value = enderecoAPI.logradouro;
-  if (!bairroInput.value.trim()) bairroInput.value = enderecoAPI.bairro;
-  if (!cidadeInput.value.trim()) cidadeInput.value = enderecoAPI.localidade;
-  if (!estadoInput.value.trim()) estadoInput.value = enderecoAPI.uf;
+  if (!logradouroInput.value.trim()) logradouroInput.value = enderecoAPI.logradouro || "";
+  if (!bairroInput.value.trim()) bairroInput.value = enderecoAPI.bairro || "";
+  if (!cidadeInput.value.trim()) cidadeInput.value = enderecoAPI.localidade || "";
+  if (!estadoInput.value.trim()) estadoInput.value = enderecoAPI.uf || "";
 
   const logradouro = logradouroInput.value.trim();
   const numero = document.getElementById("novo-endereco-numero").value.trim();
@@ -198,7 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("novo-endereco-numero").value = "";
   document.getElementById("novo-endereco-complemento").value = "";
   bairroInput.value = "";
-  document.getElementById("novo-endereco-cep").value = "";
+  cepInput.value = "";
   cidadeInput.value = "";
   estadoInput.value = "";
 
