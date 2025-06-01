@@ -202,7 +202,10 @@ public class MenuProduto {
                 break;
             case 2:
                 for (String[] img : imagensParaSalvar) {
-                    salvarImagemFisica(produtoId, img[0], img[1]);
+                    String nome = img[0];
+                    String diretorio = img[1];
+                    String caminhoCompleto = diretorio + File.separator + nome;
+                    salvarImagemFisica(produtoId, nome, caminhoCompleto);
                 }
                 System.out.println("Imagens salvas. Redirecionando para lista de produtos...");
                 continuar = false;
@@ -219,25 +222,25 @@ public class MenuProduto {
 
     }
 
-      private static boolean salvarImagemFisica(int produtoId, String nomeArquivo, String diretorioOrigem) {
-       File origem = new File(diretorioOrigem);
-        if (!origem.exists()) {
-        System.err.println("Arquivo de origem não encontrado.");
+    private static boolean salvarImagemFisica(int produtoId, String nomeArquivo, String caminhoOrigemCompleto) {
+    File origem = new File(caminhoOrigemCompleto);
+    if (!origem.exists() || !origem.isFile()) {
+        System.err.println("Arquivo de origem não encontrado ou não é um arquivo: " + origem.getPath());
         return false;
-       }  
+    }
 
-      File destinoDir = new File("imagens/" + produtoId);
-      if (!destinoDir.exists()) {
+    File destinoDir = new File("imagens/" + produtoId);
+    if (!destinoDir.exists()) {
         destinoDir.mkdirs();
-      }
+    }
 
-      File destino = new File(destinoDir, nomeArquivo);
+    File destino = new File(destinoDir, nomeArquivo);
 
-      try {
+    try {
         Files.copy(origem.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
         System.out.println("Imagem copiada para: " + destino.getPath());
         return true;
-      } catch (IOException e) {
+    } catch (IOException e) {
         System.err.println("Erro ao copiar a imagem: " + e.getMessage());
         return false;
     }

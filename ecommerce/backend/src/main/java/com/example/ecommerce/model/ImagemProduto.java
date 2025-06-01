@@ -1,17 +1,25 @@
 package com.example.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "imagensproduto")
 public class ImagemProduto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "nome_arquivo")
     private String nomeArquivo;
+
+    @Column(name ="diretorio_origem")
     private String diretorioOrigem;
+    
     private boolean principal;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "produto_id")
     private Produto produto;

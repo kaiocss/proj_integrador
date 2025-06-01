@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.classList.add('card-produto');
                 card.innerHTML = `
-                    <img src="${item.produto.imagemPrincipal || '/ecommerce/frontend/assets/default.png'}" alt="Produto">
+                   <img src="${item.produto.imagemPrincipal ? `http://127.0.0.1:8080/imagens/${item.produto.codigo}/${encodeURIComponent(item.produto.imagemPrincipal.nomeArquivo)}` : '/ecommerce/frontend/assets/default.png'}" alt="Produto">
                     <div class="info">
                         <h3>${item.produto.nome}</h3>
                         <p>

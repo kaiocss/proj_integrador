@@ -26,16 +26,18 @@ const carregarDetalhesProduto = async () => {
             return;
         }
 
-        const produtoImagens = produto.imagens.length > 0 ? produto.imagens : ["/ecommerce/frontend/assets/default.png"];
+        const produtoImagens = Array.isArray(produto.imagens) && produto.imagens.length > 0 
+        ? produto.imagens 
+        : ["/ecommerce/frontend/assets/default.png"];
 
         produtoImagens.forEach((imagem) => {
             const slide = document.createElement("div");
             slide.classList.add("swiper-slide");
         
-            const imagemSrc = imagem.nomeArquivo
-                ? `http://127.0.0.1:8080/imagens/${imagem.produtoId || produto.codigo}/${imagem.nomeArquivo}`
-                : "/ecommerce/frontend/assets/default.png";
-        
+             const imagemSrc = imagem?.nomeArquivo
+            ? `http://127.0.0.1:8080/imagens/${produto.codigo}/${encodeURIComponent(imagem.nomeArquivo)}`
+            : "/ecommerce/frontend/assets/default.png";
+
             slide.innerHTML = `<img src="${imagemSrc}" alt="${produto.nome}">`;
             swiperWrapper.appendChild(slide);
         });

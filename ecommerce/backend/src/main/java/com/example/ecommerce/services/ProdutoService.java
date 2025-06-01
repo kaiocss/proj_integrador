@@ -23,7 +23,7 @@ public class ProdutoService {
     }
 
     public Produto buscarPorCodigo(int codigo) {
-        return produtoRepository.findById(codigo).orElse(null);
+        return produtoRepository.buscarProdutoComImagens(codigo).orElse(null);
     }
 
     public Produto adicionarProduto(Produto produto) {
