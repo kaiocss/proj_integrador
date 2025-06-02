@@ -81,7 +81,7 @@ header {
 }
 
 .botoes-endereco button {
-  background-color: #eee;
+  background-color: #007bff;
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
@@ -90,7 +90,7 @@ header {
 }
 
 .botoes-endereco button:hover {
-  background-color: #ddd;
+  background-color: #007bff;
 }
 
 .btn-cadastrar {

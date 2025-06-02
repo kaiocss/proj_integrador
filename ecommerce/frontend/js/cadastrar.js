@@ -61,7 +61,6 @@ document.getElementById('formCadastro').addEventListener('submit', async functio
     if (response.ok) {
       const resultado = await response.json();
 
-      // Salvar dados no localStorage para uso em alterar.html
       const dadosParaArmazenar = {
         nome,
         email,

@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    // Trocar senha
     formSenha.addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -138,7 +137,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    // Adicionar novo endereço
     formEndereco.addEventListener("submit", (e) => {
         e.preventDefault();
 
@@ -165,7 +163,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         formEndereco.reset();
     });
 
-    // Definir endereço padrão
     function definirEnderecoPadrao(index) {
         enderecos.forEach((end, i) => {
             end.enderecoPadrao = (i === index);
@@ -176,7 +173,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         renderizarEnderecos();
     }
 
-    // Renderizar lista de endereços
     function renderizarEnderecos() {
         listaEnderecos.innerHTML = '';
 

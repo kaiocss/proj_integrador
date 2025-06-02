@@ -1,0 +1,136 @@
+body {
+    font-family: "Noto Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+}
+
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center; 
+    font-size: 22px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 5px;
+}
+
+p {
+    font-size: 16px;
+    margin: 8px 0;
+}
+
+strong {
+    color: #2c3e50;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+table td {
+    color: #555;
+}
+
+.totals-summary p {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 10px 0;
+}
+
+.userBtn{
+    max-height: 35px;
+    align-content: center;
+    margin-left: 15px;
+    margin-right: 0;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #34495e;
+    color: #fff;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 400;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .userBtn:hover{
+    filter: brightness(1); 
+    transition: filter 0.3s ease; 
+  }
+  
+  .dropdown {
+    position: absolute;
+    margin-left: 15px;
+    margin-right: 0;
+    padding: 12px;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    display: none;
+  }
+  
+  .dropdown a {
+    padding: 8px 8px;
+    text-decoration: none;
+    display: block;
+    color: black;
+  }
+  
+  .dropdown a:hover {
+    background-color: #f1f1f1;
+  }
+
+
+
+button:hover {
+    background-color: #34495e;
+    transform: scale(1.05);
+}
+
+.delivery-summary, .payment-summary, .totals-summary {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.delivery-summary p, .payment-summary p {
+    font-size: 16px;
+    color: #555;
+}
+
+.delivery-summary h2, .payment-summary h2, .totals-summary h2 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
