@@ -16,9 +16,6 @@ public class UsuarioDAOTest {
 
     private UsuarioDAO usuarioDAO;
 
-    /**
-     * 
-     */
     @BeforeEach
     public void setup() {
         usuarioDAO = new UsuarioDAO();
@@ -26,10 +23,8 @@ public class UsuarioDAOTest {
 
     @Test
     public void testLoginValido() {
-        // Substitua com dados que EXISTEM no seu banco de dados
-        String email = "admin@teste.com";
-        String senha = "admin123";
-
+        String email = "teste@teste.com";
+        String senha = "senha123";
         Usuario usuario = usuarioDAO.validarLogin(email, senha);
         assertNotNull(usuario, "Usuário deveria ser válido");
         assertEquals(email, usuario.getEmail());
@@ -37,9 +32,8 @@ public class UsuarioDAOTest {
 
     @Test
     public void testLoginInvalidoSenhaErrada() {
-        String email = "admin@teste.com";
+        String email = "teste@teste.com";
         String senhaErrada = "senhaErrada";
-
         Usuario usuario = usuarioDAO.validarLogin(email, senhaErrada);
         assertNull(usuario, "Usuário não deveria ser autenticado com senha incorreta");
     }
@@ -47,8 +41,7 @@ public class UsuarioDAOTest {
     @Test
     public void testLoginInvalidoUsuarioInexistente() {
         String email = "naoexiste@teste.com";
-        String senha = "qualquercoisa";
-
+        String senha = "senha123";
         Usuario usuario = usuarioDAO.validarLogin(email, senha);
         assertNull(usuario, "Usuário inexistente não deve passar");
     }
@@ -64,7 +57,6 @@ public class UsuarioDAOTest {
     public void testSessionManagerSetAndGet() {
         Usuario usuario = new Usuario("teste@exemplo.com", "adm", "ativado", "João", "00000000000", "senha123");
         SessionManager.setUsuarioLogado(usuario);
-
         Usuario usuarioRecuperado = SessionManager.getUsuarioLogado();
         assertNotNull(usuarioRecuperado);
         assertEquals("teste@exemplo.com", usuarioRecuperado.getEmail());
