@@ -3,7 +3,7 @@ package com.example.dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import com.example.models.Pedido;Add commentMore actions
+import com.example.models.Pedido;
 
 public class PedidoDAO {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_pi";
