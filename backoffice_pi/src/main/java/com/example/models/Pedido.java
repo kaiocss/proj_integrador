@@ -12,7 +12,7 @@ public class Pedido {
         this.clienteNome = clienteNome;
         this.status = status;
         this.numeroPedido = numeroPedido;
-        this.totalGeral = totalGeral;
+        this.totalGeral = total;
     }
 
     public int getId() { return id; }
@@ -22,6 +22,6 @@ public class Pedido {
     public double getTotal() { return totalGeral; }
 
     public void setStatus(String status) { this.status = status; }
-    public void setNumeroPedido(String numeroPedido) { this.numeroPedido = numeroPedido; }Add commentMore actions
-    public void setTotal(double total) { this.totalGeral = totalGeral; }
+    public void setNumeroPedido(String numeroPedido) { this.numeroPedido = numeroPedido; }
+    public void setTotal(double total) { this.totalGeral = total; }
 }
