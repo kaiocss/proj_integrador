@@ -1,11 +1,9 @@
 package com.example.dao;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +20,15 @@ public class UsuarioDAOTest {
     }
 
     @Test
+    public void testEncriptarSenhaDeterministico() throws Exception {
+        String senha = "minhaSenha";
+        String hash1 = usuarioDAO.encriptarSenha(senha);
+        String hash2 = usuarioDAO.encriptarSenha(senha);
+        assertEquals(hash1, hash2, "Hash deve ser determinístico para a mesma entrada");
+        assertNotEquals(senha, hash1, "Hash não pode ser igual à senha original");
+    }
+
+     @Test
     public void testLoginValido() {
         String email = "teste@teste.com";
         String senha = "senha123";
@@ -61,4 +68,6 @@ public class UsuarioDAOTest {
         assertNotNull(usuarioRecuperado);
         assertEquals("teste@exemplo.com", usuarioRecuperado.getEmail());
     }
+
+
 }
