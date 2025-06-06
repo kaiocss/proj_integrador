@@ -32,6 +32,20 @@
           <scope>test</scope>
        </dependency>
 
+        <!-- Dependências para testes Cucumber -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>7.16.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>7.16.1</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.mindrot</groupId>
