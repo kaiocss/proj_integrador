@@ -1,18 +1,28 @@
+:root {
+    /* Navy themed palette for a sleek professional look */
+    --primary-color: #0d1b4c;
+    --primary-hover: #081134;
+    --accent-color: #0073e6;
+    --bg-color: #f2f2f2;
+    --text-color: #333333;
+}
+
 body{
     font-family: "Noto Sans", sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #f8f8f8;
+    background-color: var(--bg-color);
+    color: var(--text-color);
 }
 
 header {
-    background-color: #2c3e50;
-    color: white;
+    background: linear-gradient(90deg, var(--primary-color), #06123a);
+    color: #fff;
     padding: 15px 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between; 
+    justify-content: space-between;
     border-bottom: 1px solid #ddd;
     gap: 100px;
 }
@@ -62,7 +72,7 @@ header .logo {
 }
 
 .menu-list li a:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-hover);
 }
 
 .search-container {
@@ -75,27 +85,27 @@ header .logo {
 }
 
 .search-bar {
-    width: 500px; 
-    padding: 8px; 
-    border: 1px solid #ccc; 
-    border-radius: 5px; 
+    width: 400px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
 }
 
 .search-icon {
-    width: 20px; 
-    height: 20px; 
-    cursor: pointer; 
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
     position: relative;
-    margin-left: -30px;
+    margin-left: -35px;
 }
 
 .login {
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: #007bff;
+    color: var(--link-color);
     font-size: 14px;
-    gap: 15px; 
+    gap: 15px;
 }
 
 .icone-usuario {
@@ -114,7 +124,7 @@ header .logo {
     
 .login:hover {
     text-decoration: underline;
-    color:#36494E;
+    color: var(--primary-hover);
 }
 
 
@@ -135,7 +145,7 @@ header .carrinho img:hover {
 
 
 section.titulo {
-    background-color: #f8f8f8; 
+    background-color: var(--bg-color); 
     display: flex;
     align-items: center; 
     gap: 55px; 
@@ -147,7 +157,7 @@ section.titulo {
 section.titulo h1 {
     font-size: 32px;
     font-weight: bold;
-    color: #2c3e50; 
+    color: var(--primary-color); 
     margin-bottom: 30px;
     position: relative;
 }
@@ -157,7 +167,7 @@ section.titulo h1 {
     display: block;
     width: 60px;
     height: 4px;
-    background: #4CAF50; 
+    background: var(--accent-color); 
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -196,23 +206,24 @@ section.titulo h1 {
     gap: 16px;
     justify-content: center;
     padding: 20px;
-    background-color: #f5f5f5;
+    background-color: var(--bg-color);
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .produto-card {
-    width: 300px; 
-    border: 1px solid #ddd; 
-    border-radius: 10px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    overflow: hidden; 
-    background-color: #fff; 
+    width: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0,0,0,0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .produto-card:hover {
-    transform: translateY(-5px); 
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+    transform: translateY(-6px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    border-color: var(--accent-color);
 }
 
 
@@ -243,7 +254,7 @@ section.titulo h1 {
     font-size: 24px;
     margin: 0;
     font-weight: bolder;
-    color: #36494E;
+    color: var(--primary-color);
 }
 
 .produto-info p {
@@ -255,7 +266,7 @@ section.titulo h1 {
 .botao-detalhes {
     margin-top: 12px;
     padding: 10px 20px;
-    background-color: #2c3e50;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 5px;
@@ -265,11 +276,11 @@ section.titulo h1 {
 }
 
 .botao-detalhes:hover {
-    background-color: #34495e;
+    background-color: var(--primary-hover);
 }
 
 section.detalhes {
-    background-color: #f8f8f8; 
+    background-color: var(--bg-color); 
     display: flex;
     align-items: center; 
     gap: 50px; 
@@ -281,13 +292,13 @@ section.detalhes {
 section.detalhes h2 {
     font-size: 32px;
     font-weight: bold;
-    color: #2c3e50; 
+    color: var(--primary-color); 
     margin: 0; 
 }
 section.detalhes h1 {
     font-size: 32px;
     font-weight: bold;
-    color: #2c3e50; 
+    color: var(--primary-color); 
     margin: 0; 
 }
 
@@ -310,7 +321,7 @@ section.detalhes h1 {
     display: block;
     width: 60px;
     height: 4px;
-    background: #4CAF50; 
+    background: var(--accent-color); 
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -352,13 +363,13 @@ section.detalhes h1 {
 .detalhe-info h1 {
     font-size: 28px;
     font-weight: bold;
-    color: #2c3e50;
+    color: var(--primary-color);
     margin-bottom: 15px;
 }
 
 .detalhe-info p {
     font-size: 18px;
-    color: #34495e;
+    color: var(--primary-hover);
     margin: 10px 0;
 }
 
@@ -369,7 +380,7 @@ section.detalhes h1 {
     padding: 15px 30px;
     font-size: 18px;
     color: white;
-    background-color: #2c3e50;
+    background-color: var(--primary-color);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -378,7 +389,7 @@ section.detalhes h1 {
 }
 
 .botao-comprar:hover {
-    background-color: #34495e;
+    background-color: var(--primary-hover);
     transform: scale(1.05);
 }
 
@@ -522,7 +533,7 @@ section.detalhes h1 {
 }
 
 .quantidade-btn {
-    background-color: #34495e;
+    background-color: var(--primary-hover);
     border: none;
     color: white;
     width: 30px;
@@ -535,7 +546,7 @@ section.detalhes h1 {
 }
 
 .quantidade-btn:hover {
-    background-color: #2c3e50;
+    background-color: var(--primary-color);
 }
 
 .quantidade-text {
@@ -564,13 +575,13 @@ section.detalhes h1 {
     font-size: 14px;
     border-radius: 6px;
     border: none;
-    background-color: #2c3e50;
+    background-color: var(--primary-color);
     color: #fff;
     cursor: pointer;
 }
 
 .cep-section button:hover{
-    background-color: #34495e;
+    background-color: var(--primary-hover);
 }
 
 #frete-opcoes {
@@ -626,7 +637,7 @@ section.detalhes h1 {
 
   .botao-finalizar {
     margin-top: 1rem;
-    background-color: #2c3e50;
+    background-color: var(--primary-color);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -635,7 +646,7 @@ section.detalhes h1 {
   }
 
   .botao-finalizar:hover{
-    background-color: #34495e;
+    background-color: var(--primary-hover);
     transform: scale(1.00);
   }
 
@@ -680,7 +691,7 @@ section.detalhes h1 {
     margin-right: 0;
     padding: 12px;
     font-size: 16px;
-    background-color: #34495e;
+    background-color: var(--primary-hover);
     color: #fff;
     font-family: "Noto Sans", sans-serif;
     font-weight: 400;
@@ -734,7 +745,7 @@ table th, table td {
 table th {
     background-color: #f2f2f2;
     font-weight: bold;
-    color: #2c3e50;
+    color: var(--primary-color);
 }
 
 table td {
@@ -744,20 +755,20 @@ table td {
 .totals-summary p {
     font-size: 18px;
     font-weight: bold;
-    color: #2c3e50;
+    color: var(--primary-color);
     margin: 10px 0;
 }
 
 
 button:hover {
-    background-color: #34495e;
+    background-color: var(--primary-hover);
     transform: scale(1.05);
 }
 
 .delivery-summary, .payment-summary, .totals-summary {
     margin-top: 20px;
     padding: 15px;
-    background-color: #f8f8f8;
+    background-color: var(--bg-color);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -769,7 +780,7 @@ button:hover {
 
 .delivery-summary h2, .payment-summary h2, .totals-summary h2 {
     font-size: 20px;
-    color: #2c3e50;
+    color: var(--primary-color);
     margin-bottom: 10px;
 }
 
@@ -796,7 +807,7 @@ button:hover {
 button {
     padding: 5px 10px;
     cursor: pointer;
-    background-color: #34495e;
+    background-color: var(--primary-hover);
     color: #f2f2f2;
     font-family: "Noto Sans", sans-serif;
     font-weight: 400;
