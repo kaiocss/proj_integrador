@@ -1,6 +1,17 @@
+:root {
+  --primary-color: #002b5b;
+  --primary-hover: #001f3f;
+  --link-color: #00509e;
+  --link-hover: #003f7d;
+  --accent-color: #00509e;
+  --bg-color: #f0f0f0;
+  --text-color: #1a1a1a;
+}
+
 body {
   font-family: 'Noto Sans', sans-serif;
-  background-color: #f4f4f4;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   margin: 0;
   padding: 0;
 }
@@ -41,17 +52,17 @@ header {
 .btn-voltar {
   display: inline-block;
   margin-bottom: 1rem;
-  color: #007bff;
+  color: var(--link-color);
   text-decoration: none;
   font-weight: bold;
   padding: 0.5rem 1rem;
-  border: 2px solid #007bff;
+  border: 2px solid var(--link-color);
   border-radius: 6px;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-voltar:hover {
-  background-color: #007bff;
+  background-color: var(--link-color);
   color: white;
 }
 
@@ -81,7 +92,7 @@ header {
 }
 
 .botoes-endereco button {
-  background-color: #007bff;
+  background-color: var(--link-color);
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
@@ -90,11 +101,11 @@ header {
 }
 
 .botoes-endereco button:hover {
-  background-color: #007bff;
+  background-color: var(--link-hover);
 }
 
 .btn-cadastrar {
-  background-color: #007bff;
+  background-color: var(--link-color);
   color: white;
   padding: 0.8rem;
   border: none;
@@ -106,7 +117,7 @@ header {
 }
 
 .btn-cadastrar:hover {
-  background-color: #0056b3;
+  background-color: var(--link-hover);
 }
 
 .mensagem-erro {
