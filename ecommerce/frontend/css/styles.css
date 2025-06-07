@@ -1,4 +1,9 @@
-
+:root {
+    --primary-color: #2c3e50;
+    --primary-hover: #34495e;
+    --accent-color: #4CAF50;
+    --bg-color: #f8f8f8;
+    --text-color: #2c3e50;
 }
 
 body{
@@ -66,7 +71,7 @@ header .logo {
 }
 
 .menu-list li a:hover {
-    background-color: var(--primary-hover);
+    background-color: #0056b3;
 }
 
 .search-container {
@@ -97,9 +102,9 @@ header .logo {
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: var(--link-color);
+    color: #007bff;
     font-size: 14px;
-    gap: 15px;
+    gap: 15px; 
 }
 
 .icone-usuario {
@@ -118,7 +123,7 @@ header .logo {
     
 .login:hover {
     text-decoration: underline;
-    color: var(--primary-hover);
+    color:#36494E;
 }
 
 
@@ -200,7 +205,7 @@ section.titulo h1 {
     gap: 16px;
     justify-content: center;
     padding: 20px;
-    background-color: var(--bg-color);
+    background-color: #f5f5f5;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
@@ -246,7 +251,7 @@ section.titulo h1 {
     font-size: 24px;
     margin: 0;
     font-weight: bolder;
-    color: var(--primary-color);
+    color: #36494E;
 }
 
 .produto-info p {

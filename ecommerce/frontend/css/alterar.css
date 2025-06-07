@@ -1,22 +1,13 @@
-:root {
-    --primary-color: #002b5b;
-    --primary-hover: #001f3f;
-    --accent-color: #00509e;
-    --bg-color: #f0f0f0;
-    --text-color: #1a1a1a;
-}
-
 body {
     font-family: "Noto Sans", sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background-color: #f8f8f8;
 }
 
 section.editar {
-    background-color: var(--bg-color);
+    background-color: #f8f8f8;
     display: flex;
     align-items: center;
     gap: 50px;
@@ -28,7 +19,7 @@ section.editar {
 section.editar h2 {
     font-size: 32px;
     font-weight: bold;
-    color: var(--primary-color);
+    color: #2c3e50;
     margin: 0;
 }
 
@@ -50,7 +41,7 @@ section.editar h2 {
     display: block;
     width: 60px;
     height: 4px;
-    background: var(--accent-color);
+    background: #4CAF50;
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -88,7 +79,7 @@ section.editar h2 {
 .form-cadastro h2 {
     margin-top: 0;
     font-size: 1.5rem;
-    color: var(--text-color);
+    color: #333;
 }
 
 .linha {
@@ -107,12 +98,12 @@ input, select, button {
 }
 
 input:focus, select:focus {
-    border-color: var(--link-color);
-    box-shadow: 0px 0px 5px rgba(0, 80, 158, 0.5);
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
 }
 
 button {
-    background-color: var(--primary-hover);
+    background-color: #34495e;
     color: #fff;
     border: none;
     cursor: pointer;
@@ -121,7 +112,7 @@ button {
 }
 
 button:hover {
-    background-color: var(--primary-color);
+    background-color: #2c3e50;
 }
 
 .mensagem-erro {
@@ -138,7 +129,7 @@ button:hover {
 #listaEnderecos li {
     padding: 10px;
     margin-bottom: 10px;
-    background-color: var(--bg-color);
+    background-color: #f2f2f2;
     border-radius: 6px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     font-size: 0.95rem;
