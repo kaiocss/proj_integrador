@@ -1,18 +1,9 @@
-:root {
-    --primary-color: #002b5b;
-    --primary-hover: #001f3f;
-    --accent-color: #00509e;
-    --bg-color: #f0f0f0;
-    --text-color: #1a1a1a;
-}
-
 body {
     font-family: "Noto Sans", sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background-color: #f8f8f8;
 }
 
 main {
@@ -27,9 +18,9 @@ main {
 h2 {
     text-align: center; 
     font-size: 22px;
-    color: var(--primary-color);
+    color: #2c3e50;
     margin-bottom: 15px;
-    border-bottom: 2px solid var(--accent-color);
+    border-bottom: 2px solid #4CAF50;
     padding-bottom: 5px;
 }
 
@@ -39,7 +30,7 @@ p {
 }
 
 strong {
-    color: var(--primary-color);
+    color: #2c3e50;
 }
 
 table {
@@ -55,9 +46,9 @@ table th, table td {
 }
 
 table th {
-    background-color: var(--bg-color);
+    background-color: #f2f2f2;
     font-weight: bold;
-    color: var(--primary-color);
+    color: #2c3e50;
 }
 
 table td {
@@ -67,7 +58,7 @@ table td {
 .totals-summary p {
     font-size: 18px;
     font-weight: bold;
-    color: var(--primary-color);
+    color: #2c3e50;
     margin: 10px 0;
 }
 
@@ -78,7 +69,7 @@ table td {
     margin-right: 0;
     padding: 12px;
     font-size: 16px;
-    background-color: var(--primary-hover);
+    background-color: #34495e;
     color: #fff;
     font-family: "Noto Sans", sans-serif;
     font-weight: 400;
@@ -120,14 +111,14 @@ table td {
 
 
 button:hover {
-    background-color: var(--primary-hover);
+    background-color: #34495e;
     transform: scale(1.05);
 }
 
 .delivery-summary, .payment-summary, .totals-summary {
     margin-top: 20px;
     padding: 15px;
-    background-color: var(--bg-color);
+    background-color: #f8f8f8;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -139,7 +130,7 @@ button:hover {
 
 .delivery-summary h2, .payment-summary h2, .totals-summary h2 {
     font-size: 20px;
-    color: var(--primary-color);
+    color: #2c3e50;
     margin-bottom: 10px;
 }
 

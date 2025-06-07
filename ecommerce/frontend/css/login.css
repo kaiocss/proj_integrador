@@ -1,5 +1,11 @@
 
-
+:root {
+    --primary-color: #2c3e50;
+    --primary-hover: #34495e;
+    --link-color: #007bff;
+    --link-hover: #0056b3;
+    --bg-color: #f4f4f4;
+    --text-color: #2c3e50;
 }
 
 body {
@@ -12,12 +18,12 @@ body {
 
 .auth-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    gap: 2rem;
-    padding: 2rem;
-    background-color: var(--bg-color);
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    gap: 2rem; 
+    padding: 2rem; 
+    background-color: #f4f4f4;
 }
 
 /* Seção de login */
