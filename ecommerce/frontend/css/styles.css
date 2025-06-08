@@ -1,8 +1,8 @@
 :root {
-    --primary-color: #0052b3;
-    --primary-dark: #003880;
-    --secondary-color: #ff6a00;
-    --secondary-dark: #cc5500;
+    --primary-color: #002b5e; /* navy */
+    --primary-dark: #001633; /* dark navy */
+    --secondary-color: #8b004b; /* dark pink */
+    --secondary-dark: #640036;
     --bg-color: #f0f2f5;
     --text-color: #333;
     --heading-color: #002240;
@@ -17,7 +17,7 @@ body{
 }
 
 header {
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(90deg, var(--primary-dark), var(--secondary-dark));
     color: white;
     padding: 15px 20px;
     display: flex;
@@ -195,11 +195,12 @@ header .carrinho img:hover {
     color: white;
     text-decoration: none;
     border-radius: 6px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .hero-btn:hover {
     background-color: var(--secondary-dark);
+    transform: scale(1.05);
 }
 
 
@@ -335,6 +336,7 @@ section.titulo h1 {
 
 .botao-detalhes:hover {
     background-color: var(--primary-dark);
+    transform: translateY(-2px);
 }
 
 section.detalhes {

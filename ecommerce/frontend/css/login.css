@@ -1,8 +1,8 @@
 
 :root {
-    --primary-color: #0066cc;
-    --primary-dark: #004a99;
-    --secondary-color: #ff8800;
+    --primary-color: #002b5e;
+    --primary-dark: #001633;
+    --secondary-color: #8b004b;
     --bg-color: #f4f6f8;
 }
 
@@ -60,11 +60,12 @@ body {
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .login-section button:hover {
     background-color: var(--primary-dark);
+    transform: scale(1.05);
 }
 
 /* Seção de cadastro */
@@ -92,11 +93,12 @@ body {
     text-decoration: none;
     font-size: 1rem;
     font-weight: bold;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .signup-section .btn-signup:hover {
     background-color: var(--primary-dark);
+    transform: scale(1.05);
 }
 
 /* Responsividade */
