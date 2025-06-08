@@ -1,7 +1,14 @@
 
+:root {
+    --primary-color: #0066cc;
+    --primary-dark: #004a99;
+    --secondary-color: #ff8800;
+    --bg-color: #f4f6f8;
+}
+
 body {
-    font-family: 'Noto Sans', sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Poppins', 'Noto Sans', sans-serif;
+    background-color: var(--bg-color);
     margin: 0;
     padding: 0;
 }
@@ -13,7 +20,7 @@ body {
     min-height: 100vh; 
     gap: 2rem; 
     padding: 2rem; 
-    background-color: #f4f4f4;
+    background-color: var(--bg-color);
 }
 
 /* Seção de login */
@@ -27,7 +34,7 @@ body {
 
 .login-section h2 {
     font-size: 1.5rem;
-    color: #2c3e50;
+    color: var(--primary-dark);
     margin-bottom: 1rem;
 }
 
@@ -45,7 +52,7 @@ body {
 }
 
 .login-section button {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     padding: 0.8rem;
     border: none;
@@ -57,7 +64,7 @@ body {
 }
 
 .login-section button:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-dark);
 }
 
 /* Seção de cadastro */
@@ -72,13 +79,13 @@ body {
 
 .signup-section h2 {
     font-size: 1.5rem;
-    color: #2c3e50;
+    color: var(--primary-dark);
     margin-bottom: 1rem;
 }
 
 .signup-section .btn-signup {
     display: inline-block;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     padding: 0.8rem 1.5rem;
     border-radius: 6px;
@@ -89,7 +96,7 @@ body {
 }
 
 .signup-section .btn-signup:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-dark);
 }
 
 /* Responsividade */
